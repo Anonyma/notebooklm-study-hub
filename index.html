@@ -287,6 +287,162 @@
             font-size: 0.75rem;
         }
 
+        /* Image gallery for study guides */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .image-card {
+            background: var(--bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .image-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .image-card .caption {
+            padding: 10px;
+            font-size: 0.85rem;
+        }
+
+        .image-card .caption strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .image-card .caption small {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+        }
+
+        /* Inline images in article content */
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+        }
+
+        .article-content em {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        /* Image lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 200;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .lightbox .caption {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            max-width: 80%;
+            text-align: center;
+        }
+
+        /* Study guide sections */
+        .study-guide-section {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .study-guide-section h4 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .quick-fact {
+            background: var(--card);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .quick-fact strong {
+            color: var(--accent);
+        }
+
+        /* Quiz link from summary */
+        .take-quiz-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .take-quiz-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
         /* Quiz view */
         .quiz-progress {
             background: var(--bg);
@@ -421,7 +577,7 @@
     <div class="container">
         <header>
             <h1>NotebookLM Study Hub</h1>
-            <p>Summaries & Quizzes from your Audio Overviews</p>
+            <p>Study guides with images, key facts & quizzes from your podcasts</p>
             <div class="stats">
                 <div class="stat">
                     <div class="stat-value" id="stat-podcasts">-</div>
@@ -439,8 +595,8 @@
         </header>
 
         <div class="tabs">
-            <div class="tab active" data-tab="summaries">Summaries</div>
-            <div class="tab" data-tab="quizzes">Quizzes</div>
+            <div class="tab active" data-tab="summaries">📚 Study Guides</div>
+            <div class="tab" data-tab="quizzes">📝 Quizzes</div>
         </div>
 
         <div id="content">
@@ -454,6 +610,12 @@
             <span class="modal-close" onclick="closeModal()">&times;</span>
             <div id="modal-body"></div>
         </div>
+    </div>
+
+    <!-- Lightbox for images -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img src="" alt="">
+        <div class="caption"></div>
     </div>
 
     <script>
@@ -565,16 +727,22 @@
             const content = document.getElementById('content');
 
             if (currentTab === 'summaries') {
-                content.innerHTML = summaries.map(s => `
-                    <div class="card" onclick="openSummary('${s.id}')">
-                        <h3>${s.title}</h3>
-                        <p>${s.tldr || s.summary_text.substring(0, 150)}...</p>
-                        <div class="card-meta">
-                            <span>${s.key_points?.length || 0} key points</span>
-                            ${s.is_rich ? '<span class="badge success">Rich</span>' : ''}
+                content.innerHTML = summaries.map(s => {
+                    const imageCount = s.metadata?.images?.length || 0;
+                    const hasQuiz = quizzes.some(q => q.asset_id === s.asset_id);
+                    return `
+                        <div class="card" onclick="openSummary('${s.id}')">
+                            <h3>${s.title}</h3>
+                            <p>${s.tldr || s.summary_text.substring(0, 150)}...</p>
+                            <div class="card-meta">
+                                <span>${s.key_points?.length || 0} key points</span>
+                                ${imageCount > 0 ? `<span>📸 ${imageCount} images</span>` : ''}
+                                ${hasQuiz ? '<span>📝 Quiz available</span>' : ''}
+                                ${s.is_rich ? '<span class="badge success">Study Guide</span>' : ''}
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             } else {
                 content.innerHTML = quizzes.map(q => {
                     const quizProgress = progress[q.id];
@@ -615,22 +783,43 @@
             currentQuiz = null;
         }
 
-        // Simple markdown to HTML converter
+        // Markdown to HTML converter with image support
         function markdownToHtml(text) {
             if (!text) return '';
             return text
+                // Images: ![alt](url)
+                .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" onclick="openLightbox(\'$2\', \'$1\')" loading="lazy">')
+                // Headings
                 .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                // Bold and italic
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Links: [text](url)
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+                // Paragraphs
                 .replace(/\n\n/g, '</p><p>')
                 .replace(/^(.+)$/gm, '<p>$1</p>')
                 .replace(/<p><h/g, '<h')
-                .replace(/<\/h([123])><\/p>/g, '</h$1>');
+                .replace(/<\/h([123])><\/p>/g, '</h$1>')
+                .replace(/<p><img/g, '<img')
+                .replace(/<\/img><\/p>/g, '');
         }
 
-        // Summary view
+        // Lightbox for images
+        function openLightbox(src, caption) {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.querySelector('img').src = src;
+            lightbox.querySelector('.caption').textContent = caption;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        // Summary view - Study Guide Format
         function openSummary(id) {
             const summary = summaries.find(s => s.id === id);
             if (!summary) return;
@@ -638,28 +827,49 @@
             const keyPointsHtml = summary.key_points?.map(p => `<li>${p}</li>`).join('') || '';
             const metadata = summary.metadata;
 
+            // Build image gallery for rich summaries
+            let imageGalleryHtml = '';
+            if (metadata?.images?.length) {
+                const imageCards = metadata.images.map(img => `
+                    <div class="image-card">
+                        <img src="${img.thumb_url}" alt="${img.term}"
+                             onclick="openLightbox('${img.url}', '${(img.caption || img.term).replace(/'/g, "\\'")}')">
+                        <div class="caption">
+                            <strong>${img.term}</strong>
+                            ${img.caption ? `<br>${img.caption.substring(0, 80)}${img.caption.length > 80 ? '...' : ''}` : ''}
+                            <br><small>${img.attribution}</small>
+                        </div>
+                    </div>
+                `).join('');
+
+                imageGalleryHtml = `
+                    <div class="study-guide-section">
+                        <h4>📸 Visual References</h4>
+                        <div class="image-gallery">
+                            ${imageCards}
+                        </div>
+                    </div>
+                `;
+            }
+
             // Build resources section for rich summaries
             let resourcesHtml = '';
             if (metadata?.resources) {
                 const r = metadata.resources;
-                const searchLinks = r.search_queries?.map(q =>
-                    `<a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" class="resource-link">🔍 ${q}</a>`
-                ).join('') || '';
-
                 const wikiLinks = r.wikipedia_articles?.map(a =>
                     `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(a.replace(/ /g, '_'))}" target="_blank" class="resource-link">📚 ${a}</a>`
                 ).join('') || '';
 
-                const imageLinks = r.image_searches?.map(q =>
-                    `<a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q)}" target="_blank" class="resource-link">🖼️ ${q}</a>`
+                const searchLinks = r.search_queries?.map(q =>
+                    `<a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" class="resource-link">🔍 ${q}</a>`
                 ).join('') || '';
 
-                if (searchLinks || wikiLinks || imageLinks) {
+                if (wikiLinks || searchLinks) {
                     resourcesHtml = `
-                        <div class="resources-section">
-                            <h4>Learn More</h4>
+                        <div class="study-guide-section">
+                            <h4>📖 Learn More</h4>
                             <div class="resource-links">
-                                ${wikiLinks}${searchLinks}${imageLinks}
+                                ${wikiLinks}${searchLinks}
                             </div>
                         </div>
                     `;
@@ -676,6 +886,14 @@
                 `;
             }
 
+            // Check if there's a related quiz
+            const relatedQuiz = quizzes.find(q => q.asset_id === summary.asset_id);
+            const quizButtonHtml = relatedQuiz ? `
+                <button class="take-quiz-btn" onclick="closeModal(); setTimeout(() => startQuiz('${relatedQuiz.id}'), 100);">
+                    📝 Test Your Knowledge
+                </button>
+            ` : '';
+
             // Use article format for rich summaries, old format for standard
             const contentHtml = summary.is_rich
                 ? `<div class="article-content">${markdownToHtml(summary.summary_text)}</div>`
@@ -684,7 +902,7 @@
             document.getElementById('modal-body').innerHTML = `
                 <div class="summary-content">
                     <h2>${summary.title}</h2>
-                    ${summary.is_rich ? '<span class="badge success" style="margin-bottom: 15px; display: inline-block;">Rich Summary</span>' : ''}
+                    ${summary.is_rich ? '<span class="badge success" style="margin-bottom: 15px; display: inline-block;">Study Guide</span>' : ''}
 
                     ${summary.tldr ? `
                         <div class="summary-section">
@@ -696,18 +914,21 @@
                     ${topicsHtml}
 
                     <div class="summary-section">
-                        ${summary.is_rich ? '' : '<h4>Summary</h4>'}
                         ${contentHtml}
                     </div>
 
+                    ${imageGalleryHtml}
+
                     ${keyPointsHtml ? `
-                        <div class="summary-section">
-                            <h4>Key Takeaways</h4>
+                        <div class="study-guide-section">
+                            <h4>📌 Key Takeaways</h4>
                             <ul class="key-points">${keyPointsHtml}</ul>
                         </div>
                     ` : ''}
 
                     ${resourcesHtml}
+
+                    ${quizButtonHtml}
                 </div>
             `;
 
