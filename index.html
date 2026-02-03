@@ -7,292 +7,763 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg: #0f0f0f;
+            --bg: #0a0a0a;
+            --bg-elevated: #111111;
             --card: #1a1a1a;
+            --card-hover: #222222;
             --border: #2a2a2a;
-            --text: #e0e0e0;
-            --text-dim: #888;
+            --border-subtle: #1f1f1f;
+            --text: #e8e8e8;
+            --text-secondary: #a0a0a0;
+            --text-dim: #666;
             --accent: #6366f1;
             --accent-dim: #4f46e5;
+            --accent-glow: rgba(99, 102, 241, 0.15);
             --success: #22c55e;
+            --warning: #f59e0b;
             --error: #ef4444;
+            --energy: #f59e0b;
+            --institutions: #22c55e;
+            --information: #6366f1;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-serif: Georgia, 'Times New Roman', serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: var(--font-sans);
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             line-height: 1.6;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            color: var(--text-dim);
-        }
-
-        .stats {
+        /* ===== LAYOUT ===== */
+        .app-container {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
+            min-height: 100vh;
         }
 
-        .stat {
+        .sidebar {
+            width: 280px;
+            background: var(--bg-elevated);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 50;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            padding-left: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover {
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-box {
+            background: var(--card);
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
         }
 
         .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.25rem;
+            font-weight: 600;
             color: var(--accent);
         }
 
         .stat-label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-dim);
+            text-transform: uppercase;
         }
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        /* ===== HEADER ===== */
+        .page-header {
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-elevated);
         }
 
-        .tab {
-            padding: 10px 20px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-dim);
-            transition: all 0.2s;
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
-        .tab:hover, .tab.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
-        .card {
+        /* ===== LESSON GRID ===== */
+        .lessons-container {
+            padding: 24px 40px;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .lesson-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 15px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .card:hover {
+        .lesson-card:hover {
+            background: var(--card-hover);
             border-color: var(--accent);
             transform: translateY(-2px);
         }
 
-        .card h3 {
+        .lesson-card h3 {
+            font-size: 1rem;
             margin-bottom: 8px;
+            line-height: 1.4;
         }
 
-        .card p {
-            color: var(--text-dim);
-            font-size: 0.9rem;
+        .lesson-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
 
-        .card-meta {
+        .lesson-meta {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: var(--text-dim);
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .badge {
-            background: var(--accent-dim);
-            color: white;
-            padding: 2px 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            background: var(--border);
+            color: var(--text-secondary);
         }
 
-        .badge.success {
-            background: var(--success);
-        }
+        .badge.rich { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+        .badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge.era { background: var(--accent-glow); color: var(--accent); }
 
-        /* Modal */
-        .modal {
+        /* ===== ARTICLE VIEW ===== */
+        .article-container {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 100;
-            overflow-y: auto;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
         }
 
-        .modal.active {
+        .article-container.active {
             display: block;
         }
 
-        .modal-content {
-            background: var(--card);
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 30px;
-            border-radius: 12px;
-            position: relative;
+        .article-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: color 0.15s;
         }
 
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
+        .article-back:hover {
+            color: var(--accent);
+        }
+
+        .article-header {
+            margin-bottom: 32px;
+        }
+
+        .article-title {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .article-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Timeline sidebar in article */
+        .article-with-sidebar {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 40px;
+        }
+
+        .article-body {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .article-body h2 {
+            font-family: var(--font-sans);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .article-body h3 {
+            font-family: var(--font-sans);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .article-body p {
+            margin-bottom: 20px;
+        }
+
+        .article-body strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-body ul, .article-body ol {
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+
+        .article-body li {
+            margin-bottom: 8px;
+        }
+
+        /* TLDR Box */
+        .tldr-box {
+            background: var(--accent-glow);
+            border-left: 4px solid var(--accent);
+            padding: 20px 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 32px;
+        }
+
+        .tldr-label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .tldr-text {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Inline images */
+        .article-image {
+            margin: 32px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--card);
+        }
+
+        .article-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .article-image figcaption {
+            padding: 12px 16px;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Article sidebar */
+        .article-sidebar {
+            position: sticky;
+            top: 24px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        /* Timeline indicator */
+        .timeline-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .timeline-indicator:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.energy { background: var(--energy); }
+        .timeline-dot.institutions { background: var(--institutions); }
+        .timeline-dot.information { background: var(--information); }
+
+        .timeline-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .timeline-anchor-num {
+            font-size: 0.7rem;
             color: var(--text-dim);
         }
 
-        .modal-close:hover {
+        .timeline-anchor-title {
+            font-size: 0.8rem;
             color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* Summary view */
-        .summary-content h2 {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
+        /* Related lessons */
+        .related-lesson {
+            display: block;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.15s;
         }
 
-        .summary-section {
-            margin-bottom: 25px;
+        .related-lesson:last-child {
+            border-bottom: none;
         }
 
-        .summary-section h4 {
+        .related-lesson:hover {
             color: var(--accent);
-            margin-bottom: 10px;
         }
 
-        .key-points {
+        .related-type {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* Key takeaways */
+        .takeaways-list {
             list-style: none;
         }
 
-        .key-points li {
-            padding: 8px 0;
-            padding-left: 20px;
+        .takeaways-list li {
             position: relative;
+            padding: 8px 0 8px 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .key-points li::before {
-            content: "→";
+        .takeaways-list li:last-child {
+            border-bottom: none;
+        }
+
+        .takeaways-list li::before {
+            content: "";
             position: absolute;
             left: 0;
-            color: var(--accent);
+            top: 14px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 2px;
         }
 
-        .tldr {
-            background: var(--bg);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent);
-        }
-
-        .article-content {
-            line-height: 1.8;
-        }
-
-        .article-content h1, .article-content h2, .article-content h3 {
-            color: var(--text);
-            margin-top: 25px;
-            margin-bottom: 15px;
-        }
-
-        .article-content h2 {
-            font-size: 1.3rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-        }
-
-        .article-content p {
-            margin-bottom: 15px;
-        }
-
-        .resources-section {
-            background: var(--bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 25px;
-        }
-
-        .resources-section h4 {
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-
-        .resource-links {
+        /* Entity cards */
+        .entity-card {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
 
-        .resource-link {
+        .entity-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .entity-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .entity-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .entity-dates {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .entity-type {
             display: inline-block;
-            padding: 6px 12px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            background: var(--border);
+            border-radius: 3px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== TIMELINE VIEW ===== */
+        .timeline-container {
+            padding: 40px;
+            display: none;
+        }
+
+        .timeline-container.active {
+            display: block;
+        }
+
+        .timeline-scale-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .scale-tab {
+            padding: 8px 16px;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 6px;
-            color: var(--text);
-            text-decoration: none;
             font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .scale-tab:hover, .scale-tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .timeline-visual {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--energy), var(--institutions), var(--information));
+        }
+
+        .timeline-anchor {
+            position: relative;
+            padding: 16px 0 16px 32px;
+            cursor: pointer;
+        }
+
+        .timeline-anchor:hover .timeline-anchor-content {
+            background: var(--card-hover);
+            border-color: var(--accent);
+        }
+
+        .timeline-anchor-marker {
+            position: absolute;
+            left: -44px;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+            z-index: 1;
+        }
+
+        .timeline-anchor-marker.energy { background: var(--energy); }
+        .timeline-anchor-marker.institutions { background: var(--institutions); }
+        .timeline-anchor-marker.information { background: var(--information); }
+
+        .timeline-anchor-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.15s;
+        }
+
+        .timeline-anchor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .timeline-anchor-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .timeline-anchor-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .timeline-anchor-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .timeline-lessons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .timeline-lesson-chip {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            background: var(--accent-glow);
+            color: var(--accent);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .timeline-lesson-chip:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* ===== ENTITIES VIEW ===== */
+        .entities-container {
+            padding: 24px 40px;
+            display: none;
+        }
+
+        .entities-container.active {
+            display: block;
+        }
+
+        .entity-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .entities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .entity-gallery-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
             transition: all 0.2s;
         }
 
-        .resource-link:hover {
+        .entity-gallery-card:hover {
             border-color: var(--accent);
-            color: var(--accent);
+            transform: translateY(-2px);
         }
 
-        .topics-covered {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
+        .entity-gallery-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: var(--border);
         }
 
-        .topic-tag {
-            background: var(--accent-dim);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
+        .entity-gallery-info {
+            padding: 16px;
         }
 
-        /* Quiz view */
+        .entity-gallery-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .entity-gallery-dates {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .entity-gallery-desc {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== QUIZ VIEW ===== */
+        .quiz-container {
+            padding: 24px 40px;
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
         .quiz-progress {
-            background: var(--bg);
+            background: var(--card);
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 16px;
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -300,10 +771,10 @@
 
         .progress-bar {
             flex: 1;
-            height: 8px;
+            height: 6px;
             background: var(--border);
-            border-radius: 4px;
-            margin: 0 15px;
+            border-radius: 3px;
+            margin: 0 16px;
             overflow: hidden;
         }
 
@@ -314,407 +785,940 @@
         }
 
         .question-card {
-            background: var(--bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: var(--card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
         }
 
         .question-text {
             font-size: 1.1rem;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            line-height: 1.5;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .option {
-            padding: 15px;
-            background: var(--card);
+            padding: 16px;
+            background: var(--bg);
             border: 2px solid var(--border);
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
         .option:hover:not(.disabled) {
             border-color: var(--accent);
         }
 
-        .option.selected {
-            border-color: var(--accent);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .option.correct {
-            border-color: var(--success);
-            background: rgba(34, 197, 94, 0.1);
-        }
-
-        .option.incorrect {
-            border-color: var(--error);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .option.disabled {
-            cursor: default;
-        }
+        .option.selected { border-color: var(--accent); background: var(--accent-glow); }
+        .option.correct { border-color: var(--success); background: rgba(34, 197, 94, 0.1); }
+        .option.incorrect { border-color: var(--error); background: rgba(239, 68, 68, 0.1); }
+        .option.disabled { cursor: default; }
 
         .explanation {
-            margin-top: 15px;
-            padding: 15px;
+            margin-top: 16px;
+            padding: 16px;
             background: rgba(34, 197, 94, 0.1);
             border-radius: 8px;
-            border-left: 3px solid var(--success);
+            border-left: 4px solid var(--success);
+            font-size: 0.9rem;
         }
 
         .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 12px 24px;
             background: var(--accent);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.15s;
         }
 
-        .btn:hover {
-            background: var(--accent-dim);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn:hover { background: var(--accent-dim); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn.secondary { background: var(--card); border: 1px solid var(--border); color: var(--text); }
 
         .quiz-results {
             text-align: center;
-            padding: 40px;
+            padding: 48px;
         }
 
         .score {
-            font-size: 3rem;
-            font-weight: bold;
+            font-size: 4rem;
+            font-weight: 700;
             color: var(--accent);
-            margin: 20px 0;
+            margin: 16px 0;
         }
 
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .modal.active { display: block; }
+
+        .modal-content {
+            background: var(--card);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 32px;
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: color 0.15s;
+        }
+
+        .modal-close:hover { color: var(--text); }
+
+        /* ===== LOADING ===== */
         .loading {
             text-align: center;
-            padding: 40px;
+            padding: 48px;
             color: var(--text-dim);
         }
 
-        @media (max-width: 600px) {
-            .container { padding: 15px; }
-            .modal-content { margin: 20px; padding: 20px; }
-            .stats { gap: 15px; }
-            .tabs { flex-wrap: wrap; }
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .article-with-sidebar {
+                grid-template-columns: 1fr;
+            }
+            .article-sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .lessons-container,
+            .timeline-container,
+            .entities-container,
+            .quiz-container,
+            .article-container {
+                padding: 16px;
+            }
+            .page-header {
+                padding: 16px;
+            }
+            .lesson-grid,
+            .entities-grid {
+                grid-template-columns: 1fr;
+            }
+            .article-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>NotebookLM Study Hub</h1>
-            <p>Summaries & Quizzes from your Audio Overviews</p>
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-value" id="stat-podcasts">-</div>
-                    <div class="stat-label">Podcasts</div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">NotebookLM Study Hub</div>
+            <div class="logo-subtitle">Deep Dive Audio Summaries</div>
+
+            <nav class="nav-section">
+                <div class="nav-section-title">Browse</div>
+                <div class="nav-item active" data-view="lessons">
+                    <span class="nav-icon">📚</span> All Lessons
                 </div>
-                <div class="stat">
-                    <div class="stat-value" id="stat-questions">-</div>
-                    <div class="stat-label">Questions</div>
+                <div class="nav-item" data-view="timeline">
+                    <span class="nav-icon">📅</span> Timeline
                 </div>
-                <div class="stat">
-                    <div class="stat-value" id="stat-completed">-</div>
-                    <div class="stat-label">Completed</div>
+                <div class="nav-item" data-view="entities">
+                    <span class="nav-icon">🏛️</span> Entities
+                </div>
+                <div class="nav-item" data-view="quizzes">
+                    <span class="nav-icon">✓</span> Quizzes
+                </div>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-section-title">Categories</div>
+                <div class="nav-item" data-filter="architecture">
+                    <span class="nav-icon">🏗️</span> Architecture
+                </div>
+                <div class="nav-item" data-filter="history">
+                    <span class="nav-icon">🌍</span> History
+                </div>
+                <div class="nav-item" data-filter="culture">
+                    <span class="nav-icon">🎭</span> Culture
+                </div>
+                <div class="nav-item" data-filter="materials">
+                    <span class="nav-icon">⚗️</span> Materials
+                </div>
+            </nav>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="stat-lessons">-</div>
+                    <div class="stat-label">Lessons</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="stat-entities">-</div>
+                    <div class="stat-label">Entities</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="stat-quizzes">-</div>
+                    <div class="stat-label">Quizzes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="stat-progress">0%</div>
+                    <div class="stat-label">Progress</div>
                 </div>
             </div>
-        </header>
+        </aside>
 
-        <div class="tabs">
-            <div class="tab active" data-tab="summaries">Summaries</div>
-            <div class="tab" data-tab="quizzes">Quizzes</div>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Lessons View -->
+            <div id="lessons-view">
+                <header class="page-header">
+                    <h1 class="page-title">All Lessons</h1>
+                    <p class="page-subtitle">Encyclopedic deep-dives from NotebookLM audio overviews</p>
+                </header>
+                <div class="lessons-container">
+                    <div id="lessons-grid" class="lesson-grid">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            Loading lessons...
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div id="content">
-            <div class="loading">Loading...</div>
+            <!-- Article View -->
+            <div id="article-view" class="article-container">
+                <div class="article-back" onclick="showView('lessons')">← Back to lessons</div>
+                <div id="article-content"></div>
+            </div>
+
+            <!-- Timeline View -->
+            <div id="timeline-view" class="timeline-container">
+                <header class="page-header" style="padding-left:0; padding-right:0; background:transparent; border:none;">
+                    <h1 class="page-title">Timeline of History</h1>
+                    <p class="page-subtitle">25 anchor dates from the Big Bang to the World Wide Web</p>
+                </header>
+                <div class="timeline-scale-tabs">
+                    <button class="scale-tab active" data-scale="all">All 25 Anchors</button>
+                    <button class="scale-tab" data-scale="billions">Billions (Cosmic)</button>
+                    <button class="scale-tab" data-scale="millions">Millions (Evolution)</button>
+                    <button class="scale-tab" data-scale="thousands">Thousands (Civilization)</button>
+                    <button class="scale-tab" data-scale="centuries">Centuries (Modern)</button>
+                </div>
+                <div id="timeline-content" class="timeline-visual">
+                    <div class="timeline-line"></div>
+                    <div class="loading">Loading timeline...</div>
+                </div>
+            </div>
+
+            <!-- Entities View -->
+            <div id="entities-view" class="entities-container">
+                <header class="page-header" style="padding-left:0; padding-right:0; background:transparent; border:none;">
+                    <h1 class="page-title">Entity Gallery</h1>
+                    <p class="page-subtitle">People, buildings, artworks, and concepts across all lessons</p>
+                </header>
+                <div class="entity-filters">
+                    <button class="filter-btn active" data-type="all">All</button>
+                    <button class="filter-btn" data-type="person">People</button>
+                    <button class="filter-btn" data-type="building">Buildings</button>
+                    <button class="filter-btn" data-type="artwork">Artworks</button>
+                    <button class="filter-btn" data-type="concept">Concepts</button>
+                </div>
+                <div id="entities-grid" class="entities-grid">
+                    <div class="loading">Loading entities...</div>
+                </div>
+            </div>
+
+            <!-- Quizzes View -->
+            <div id="quizzes-view" class="quiz-container">
+                <header class="page-header" style="padding-left:0; padding-right:0; background:transparent; border:none;">
+                    <h1 class="page-title">Quizzes</h1>
+                    <p class="page-subtitle">Test your knowledge from the deep dives</p>
+                </header>
+                <div id="quizzes-grid" class="lesson-grid">
+                    <div class="loading">Loading quizzes...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Entity Modal -->
+    <div class="modal" id="entity-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('entity-modal')">×</span>
+            <div id="entity-modal-content"></div>
         </div>
     </div>
 
-    <!-- Modal for viewing content -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <div id="modal-body"></div>
+    <!-- Quiz Modal -->
+    <div class="modal" id="quiz-modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="modal-close" onclick="closeModal('quiz-modal')">×</span>
+            <div id="quiz-modal-content"></div>
         </div>
     </div>
 
     <script>
-        // Supabase config
+        // ===== CONFIGURATION =====
         const SUPABASE_URL = 'https://ydwjzlikslebokuxzwco.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkd2p6bGlrc2xlYm9rdXh6d2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4NTEwODAsImV4cCI6MjA4NDQyNzA4MH0.CUPTmjww31xOS0-qknpQHByC3ACZ4lk1CiBcVZXHThU';
 
-        // State (will be initialized after Supabase loads)
-        let db = null;  // Renamed from 'supabase' to avoid conflict with library
-        let summaries = [];
+        // ===== STATE =====
+        let db = null;
+        let lessons = [];
+        let entities = [];
+        let timelineAnchors = [];
         let quizzes = [];
-        let currentTab = 'summaries';
+        let currentView = 'lessons';
         let currentQuiz = null;
         let currentQuestion = 0;
         let quizAnswers = [];
         let progress = {};
 
-        // Load progress from localStorage (for immediate feedback) + Supabase (for sync)
+        // Load local generated content as fallback
+        const LOCAL_CONTENT = {};
+
+        // ===== INITIALIZATION =====
+        async function init() {
+            if (typeof window.supabase === 'undefined') {
+                setTimeout(init, 100);
+                return;
+            }
+
+            db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            loadProgress();
+            await loadAllData();
+            setupEventListeners();
+            updateStats();
+            renderCurrentView();
+        }
+
+        async function loadAllData() {
+            await Promise.all([
+                loadLessons(),
+                loadTimeline(),
+                loadEntities(),
+                loadQuizzes()
+            ]);
+        }
+
+        async function loadLessons() {
+            try {
+                // First try to load from Supabase
+                const { data: summaryData, error } = await db
+                    .from('notebooklm_summaries')
+                    .select('*, notebooklm_assets(id, asset_title)');
+
+                if (error) throw error;
+
+                // Group by asset and prefer rich summaries
+                const lessonMap = {};
+                summaryData?.forEach(s => {
+                    const assetId = s.asset_id;
+                    if (!lessonMap[assetId]) {
+                        lessonMap[assetId] = {
+                            asset_id: assetId,
+                            title: s.notebooklm_assets?.asset_title || 'Unknown',
+                            slug: s.notebooklm_assets?.asset_title?.replace(/ /g, '_') || assetId
+                        };
+                    }
+                    if (s.summary_type === 'rich') {
+                        lessonMap[assetId].rich = s;
+                    } else if (s.summary_type === 'standard') {
+                        lessonMap[assetId].standard = s;
+                    } else if (s.summary_type === 'tldr') {
+                        lessonMap[assetId].tldr = s.summary_text;
+                    }
+                });
+
+                lessons = Object.values(lessonMap).map(l => {
+                    const source = l.rich || l.standard;
+                    return {
+                        id: source?.id,
+                        asset_id: l.asset_id,
+                        title: l.title,
+                        slug: l.slug,
+                        article: source?.summary_text || '',
+                        key_points: source?.key_points || [],
+                        tldr: l.rich?.metadata?.tldr || l.tldr,
+                        metadata: l.rich?.metadata || null,
+                        is_rich: !!l.rich
+                    };
+                }).filter(l => l.id);
+
+                // Try to load rich content from generated JSON files
+                await loadLocalContent();
+
+            } catch (err) {
+                console.error('Error loading lessons:', err);
+                // Fallback to local content only
+                await loadLocalContent();
+            }
+        }
+
+        async function loadLocalContent() {
+            // Load generated JSON files for rich content
+            const files = [
+                'Why_Brutalism_Started_With_Floral_Wallpaper',
+                'Art_Nouveau_The_Brief_Beautiful_Dream'
+            ];
+
+            for (const file of files) {
+                try {
+                    const resp = await fetch(`generated/${file}.json`);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        LOCAL_CONTENT[file] = data;
+
+                        // Merge with existing lessons or add new
+                        const existingIndex = lessons.findIndex(l => l.slug === file);
+                        if (existingIndex >= 0) {
+                            lessons[existingIndex] = {
+                                ...lessons[existingIndex],
+                                ...data,
+                                is_rich: true,
+                                local_content: true
+                            };
+                        } else {
+                            lessons.push({
+                                id: data.id,
+                                asset_id: data.id,
+                                ...data,
+                                is_rich: true,
+                                local_content: true
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.log(`Local content not found: ${file}`);
+                }
+            }
+        }
+
+        async function loadTimeline() {
+            try {
+                // Try loading from local JSON first
+                const resp = await fetch('generated/timeline_anchors.json');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    timelineAnchors = data.anchors || [];
+                    return;
+                }
+            } catch (e) {}
+
+            // Fallback to Supabase
+            try {
+                const { data, error } = await db
+                    .from('timeline_anchors')
+                    .select('*')
+                    .order('anchor_number');
+
+                if (!error && data) {
+                    timelineAnchors = data;
+                }
+            } catch (err) {
+                console.error('Error loading timeline:', err);
+            }
+        }
+
+        async function loadEntities() {
+            // Extract entities from local content
+            for (const [slug, content] of Object.entries(LOCAL_CONTENT)) {
+                if (content.entities) {
+                    content.entities.forEach(e => {
+                        if (!entities.find(ex => ex.id === e.id)) {
+                            entities.push({
+                                ...e,
+                                lessons: [slug]
+                            });
+                        } else {
+                            const existing = entities.find(ex => ex.id === e.id);
+                            if (!existing.lessons.includes(slug)) {
+                                existing.lessons.push(slug);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Also try Supabase
+            try {
+                const { data, error } = await db
+                    .from('entities')
+                    .select('*, entity_images(*)');
+
+                if (!error && data) {
+                    data.forEach(e => {
+                        if (!entities.find(ex => ex.id === e.id)) {
+                            entities.push(e);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log('Entities table not yet created');
+            }
+        }
+
+        async function loadQuizzes() {
+            try {
+                const { data, error } = await db
+                    .from('notebooklm_quizzes')
+                    .select('*, notebooklm_assets(asset_title)');
+
+                if (!error && data) {
+                    quizzes = data.map(q => ({
+                        ...q,
+                        title: q.notebooklm_assets?.asset_title || 'Unknown'
+                    }));
+                }
+            } catch (err) {
+                console.error('Error loading quizzes:', err);
+            }
+
+            // Add quizzes from local content
+            for (const [slug, content] of Object.entries(LOCAL_CONTENT)) {
+                if (content.quiz_questions) {
+                    const existingQuiz = quizzes.find(q => q.title === content.title);
+                    if (!existingQuiz) {
+                        quizzes.push({
+                            id: `local-${slug}`,
+                            title: content.title,
+                            questions: content.quiz_questions,
+                            question_count: content.quiz_questions.length,
+                            difficulty: content.metadata?.difficulty || 'intermediate',
+                            local: true
+                        });
+                    }
+                }
+            }
+        }
+
+        // ===== PROGRESS =====
         function loadProgress() {
             const saved = localStorage.getItem('notebooklm_progress');
-            if (saved) {
-                progress = JSON.parse(saved);
-            }
+            if (saved) progress = JSON.parse(saved);
         }
 
         function saveProgress() {
             localStorage.setItem('notebooklm_progress', JSON.stringify(progress));
         }
 
-        // Fetch data
-        async function fetchData() {
-            try {
-                // Fetch all summaries (standard, tldr, rich)
-                const { data: allSummaryData, error: summaryError } = await db
-                    .from('notebooklm_summaries')
-                    .select('*, notebooklm_assets(asset_title)');
-
-                if (summaryError) {
-                    console.error('Summary fetch error:', summaryError);
-                    document.getElementById('content').innerHTML = `<div class="loading">Error: ${summaryError.message}</div>`;
-                    return;
-                }
-
-                // Organize by asset_id and type
-                const summaryMap = {};
-                allSummaryData?.forEach(s => {
-                    const assetId = s.asset_id;
-                    if (!summaryMap[assetId]) {
-                        summaryMap[assetId] = {
-                            asset_id: assetId,
-                            title: s.notebooklm_assets?.asset_title || 'Unknown'
-                        };
-                    }
-                    if (s.summary_type === 'rich') {
-                        summaryMap[assetId].rich = s;
-                    } else if (s.summary_type === 'standard') {
-                        summaryMap[assetId].standard = s;
-                    } else if (s.summary_type === 'tldr') {
-                        summaryMap[assetId].tldr = s.summary_text;
-                    }
-                });
-
-                // Convert to array, preferring rich summaries
-                summaries = Object.values(summaryMap).map(s => {
-                    const source = s.rich || s.standard;
-                    return {
-                        id: source?.id,
-                        asset_id: s.asset_id,
-                        title: s.title,
-                        summary_text: source?.summary_text || '',
-                        key_points: source?.key_points || [],
-                        tldr: s.rich?.metadata?.tldr || s.tldr,
-                        metadata: s.rich?.metadata || null,
-                        is_rich: !!s.rich
-                    };
-                }).filter(s => s.id);
-
-                // Fetch quizzes
-                const { data: quizData, error: quizError } = await db
-                    .from('notebooklm_quizzes')
-                    .select('*, notebooklm_assets(asset_title)');
-
-                if (quizError) console.error('Quiz fetch error:', quizError);
-
-                quizzes = quizData?.map(q => ({
-                    ...q,
-                    title: q.notebooklm_assets?.asset_title || 'Unknown'
-                })) || [];
-
-                console.log('Loaded:', summaries.length, 'summaries,', quizzes.length, 'quizzes');
-                updateStats();
-                render();
-            } catch (err) {
-                console.error('Fetch error:', err);
-                document.getElementById('content').innerHTML = `<div class="loading">Error loading data: ${err.message}</div>`;
-            }
-        }
-
         function updateStats() {
-            document.getElementById('stat-podcasts').textContent = summaries.length;
-            document.getElementById('stat-questions').textContent =
-                quizzes.reduce((sum, q) => sum + q.question_count, 0);
+            document.getElementById('stat-lessons').textContent = lessons.length;
+            document.getElementById('stat-entities').textContent = entities.length;
+            document.getElementById('stat-quizzes').textContent = quizzes.length;
 
             const completed = Object.keys(progress).filter(k => progress[k]?.completed).length;
-            document.getElementById('stat-completed').textContent = completed;
+            const pct = quizzes.length ? Math.round((completed / quizzes.length) * 100) : 0;
+            document.getElementById('stat-progress').textContent = pct + '%';
         }
 
-        function render() {
-            const content = document.getElementById('content');
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    showView(item.dataset.view);
+                });
+            });
 
-            if (currentTab === 'summaries') {
-                content.innerHTML = summaries.map(s => `
-                    <div class="card" onclick="openSummary('${s.id}')">
-                        <h3>${s.title}</h3>
-                        <p>${s.tldr || s.summary_text.substring(0, 150)}...</p>
-                        <div class="card-meta">
-                            <span>${s.key_points?.length || 0} key points</span>
-                            ${s.is_rich ? '<span class="badge success">Rich</span>' : ''}
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                content.innerHTML = quizzes.map(q => {
-                    const quizProgress = progress[q.id];
-                    const badge = quizProgress?.completed
-                        ? `<span class="badge success">${quizProgress.score}/${q.question_count}</span>`
-                        : `<span class="badge">${q.question_count} questions</span>`;
+            // Timeline scale tabs
+            document.querySelectorAll('.scale-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.scale-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderTimeline(tab.dataset.scale);
+                });
+            });
 
-                    return `
-                        <div class="card" onclick="startQuiz('${q.id}')">
-                            <h3>${q.title}</h3>
-                            <div class="card-meta">
-                                ${badge}
-                                <span>${q.difficulty}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+            // Entity filters
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderEntities(btn.dataset.type);
+                });
+            });
+
+            // Modal close on outside click
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal.id);
+                });
+            });
+        }
+
+        // ===== VIEW MANAGEMENT =====
+        function showView(view) {
+            currentView = view;
+            document.querySelectorAll('[id$="-view"]').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('active');
+            });
+
+            const viewEl = document.getElementById(`${view}-view`);
+            if (viewEl) {
+                viewEl.style.display = 'block';
+                viewEl.classList.add('active');
+            }
+
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            switch (currentView) {
+                case 'lessons': renderLessons(); break;
+                case 'timeline': renderTimeline('all'); break;
+                case 'entities': renderEntities('all'); break;
+                case 'quizzes': renderQuizzes(); break;
             }
         }
 
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentTab = tab.dataset.tab;
-                render();
-            });
-        });
+        // ===== RENDER FUNCTIONS =====
+        function renderLessons() {
+            const grid = document.getElementById('lessons-grid');
+            if (!lessons.length) {
+                grid.innerHTML = '<div class="loading">No lessons found</div>';
+                return;
+            }
 
-        // Modal
-        function openModal() {
-            document.getElementById('modal').classList.add('active');
+            grid.innerHTML = lessons.map(l => {
+                const era = l.timeline_context?.primary_era || '';
+                return `
+                    <div class="lesson-card" onclick="openLesson('${l.slug || l.id}')">
+                        <h3>${l.title}</h3>
+                        <p>${l.tldr || l.article?.substring(0, 150) || 'No summary available'}...</p>
+                        <div class="lesson-meta">
+                            ${l.is_rich ? '<span class="badge rich">Rich Article</span>' : '<span class="badge pending">Basic</span>'}
+                            ${era ? `<span class="badge era">${era}</span>` : ''}
+                            ${l.key_takeaways?.length ? `<span class="badge">${l.key_takeaways.length} takeaways</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            currentQuiz = null;
+        function openLesson(slugOrId) {
+            const lesson = lessons.find(l => l.slug === slugOrId || l.id === slugOrId);
+            if (!lesson) return;
+
+            showView('article');
+            renderArticle(lesson);
         }
 
-        // Simple markdown to HTML converter
-        function markdownToHtml(text) {
+        function renderArticle(lesson) {
+            const content = document.getElementById('article-content');
+            const images = lesson.images || [];
+            const crossRefs = lesson.cross_references || [];
+            const entities = lesson.entities || [];
+            const anchors = lesson.timeline_context?.anchor_connections || [];
+
+            // Get relevant timeline anchors
+            const relatedAnchors = timelineAnchors.filter(a => anchors.includes(a.number || a.anchor_number));
+
+            content.innerHTML = `
+                <article class="article-header">
+                    <h1 class="article-title">${lesson.title}</h1>
+                    <div class="article-meta">
+                        ${lesson.metadata?.reading_time_minutes ? `<span class="article-meta-item">📖 ${lesson.metadata.reading_time_minutes} min read</span>` : ''}
+                        ${lesson.metadata?.word_count ? `<span class="article-meta-item">📝 ${lesson.metadata.word_count} words</span>` : ''}
+                        ${lesson.timeline_context?.primary_era ? `<span class="article-meta-item">📅 ${lesson.timeline_context.primary_era}</span>` : ''}
+                    </div>
+                </article>
+
+                <div class="article-with-sidebar">
+                    <div class="article-main">
+                        ${lesson.tldr ? `
+                            <div class="tldr-box">
+                                <div class="tldr-label">TL;DR</div>
+                                <div class="tldr-text">${lesson.tldr}</div>
+                            </div>
+                        ` : ''}
+
+                        <div class="article-body">
+                            ${markdownToHtml(lesson.article, images)}
+                        </div>
+
+                        ${lesson.key_takeaways?.length ? `
+                            <div class="sidebar-section" style="margin-top: 40px;">
+                                <div class="sidebar-section-title">Key Takeaways</div>
+                                <ul class="takeaways-list">
+                                    ${lesson.key_takeaways.map(t => `<li>${t}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <aside class="article-sidebar">
+                        ${relatedAnchors.length ? `
+                            <div class="sidebar-section">
+                                <div class="sidebar-section-title">Timeline Position</div>
+                                ${relatedAnchors.map(a => `
+                                    <div class="timeline-indicator">
+                                        <div class="timeline-dot ${a.mechanism}"></div>
+                                        <div class="timeline-info">
+                                            <div class="timeline-anchor-num">Anchor ${a.number || a.anchor_number}</div>
+                                            <div class="timeline-anchor-title">${a.title}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${crossRefs.length ? `
+                            <div class="sidebar-section">
+                                <div class="sidebar-section-title">Related Lessons</div>
+                                ${crossRefs.map(r => `
+                                    <div class="related-lesson" onclick="openLesson('${r.lesson_slug}')">
+                                        <div class="related-type">${r.connection_type}</div>
+                                        ${r.lesson_slug.replace(/_/g, ' ')}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${entities.length ? `
+                            <div class="sidebar-section">
+                                <div class="sidebar-section-title">Key Figures</div>
+                                ${entities.filter(e => e.relevance === 'primary' && e.type === 'person').slice(0, 4).map(e => `
+                                    <div class="entity-card" onclick="openEntity('${e.id}')">
+                                        <div class="entity-info">
+                                            <div class="entity-name">${e.name}</div>
+                                            <div class="entity-dates">${e.dates || ''}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </aside>
+                </div>
+            `;
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function markdownToHtml(text, images = []) {
             if (!text) return '';
-            return text
+
+            let html = text
                 .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/\n\n/g, '</p><p>')
-                .replace(/^(.+)$/gm, '<p>$1</p>')
-                .replace(/<p><h/g, '<h')
-                .replace(/<\/h([123])><\/p>/g, '</h$1>');
+                .replace(/^- (.*$)/gim, '<li>$1</li>');
+
+            // Wrap in paragraphs
+            html = '<p>' + html + '</p>';
+            html = html.replace(/<p><h/g, '<h').replace(/<\/h([123])><\/p>/g, '</h$1>');
+            html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
+
+            // Insert images after sections
+            images.forEach((img, i) => {
+                if (img.position?.startsWith('inline-after:section-')) {
+                    const sectionNum = parseInt(img.position.split('-')[2]);
+                    let h2Count = 0;
+                    html = html.replace(/<\/h2>/g, (match) => {
+                        h2Count++;
+                        if (h2Count === sectionNum) {
+                            return match + `
+                                <figure class="article-image">
+                                    <img src="${img.thumbnail_url || img.url}" alt="${img.caption}" loading="lazy">
+                                    <figcaption>${img.caption} <small style="color:var(--text-dim)">${img.attribution}</small></figcaption>
+                                </figure>
+                            `;
+                        }
+                        return match;
+                    });
+                }
+            });
+
+            return html;
         }
 
-        // Summary view
-        function openSummary(id) {
-            const summary = summaries.find(s => s.id === id);
-            if (!summary) return;
-
-            const keyPointsHtml = summary.key_points?.map(p => `<li>${p}</li>`).join('') || '';
-            const metadata = summary.metadata;
-
-            // Build resources section for rich summaries
-            let resourcesHtml = '';
-            if (metadata?.resources) {
-                const r = metadata.resources;
-                const searchLinks = r.search_queries?.map(q =>
-                    `<a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" class="resource-link">🔍 ${q}</a>`
-                ).join('') || '';
-
-                const wikiLinks = r.wikipedia_articles?.map(a =>
-                    `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(a.replace(/ /g, '_'))}" target="_blank" class="resource-link">📚 ${a}</a>`
-                ).join('') || '';
-
-                const imageLinks = r.image_searches?.map(q =>
-                    `<a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q)}" target="_blank" class="resource-link">🖼️ ${q}</a>`
-                ).join('') || '';
-
-                if (searchLinks || wikiLinks || imageLinks) {
-                    resourcesHtml = `
-                        <div class="resources-section">
-                            <h4>Learn More</h4>
-                            <div class="resource-links">
-                                ${wikiLinks}${searchLinks}${imageLinks}
-                            </div>
-                        </div>
-                    `;
-                }
+        function renderTimeline(scale = 'all') {
+            const container = document.getElementById('timeline-content');
+            if (!timelineAnchors.length) {
+                container.innerHTML = '<div class="loading">Timeline data not available</div>';
+                return;
             }
 
-            // Build topics section for rich summaries
-            let topicsHtml = '';
-            if (metadata?.claude_reference?.topics_covered?.length) {
-                topicsHtml = `
-                    <div class="topics-covered">
-                        ${metadata.claude_reference.topics_covered.map(t => `<span class="topic-tag">${t}</span>`).join('')}
+            // Filter by scale
+            let filtered = timelineAnchors;
+            const scaleRanges = {
+                'billions': a => a.date_years_ago > 1000000000,
+                'millions': a => a.date_years_ago > 100000 && a.date_years_ago <= 1000000000,
+                'thousands': a => a.date_years_ago > 500 && a.date_years_ago <= 100000,
+                'centuries': a => a.date_years_ago <= 500
+            };
+
+            if (scale !== 'all' && scaleRanges[scale]) {
+                filtered = timelineAnchors.filter(scaleRanges[scale]);
+            }
+
+            container.innerHTML = '<div class="timeline-line"></div>' + filtered.map(anchor => {
+                const num = anchor.number || anchor.anchor_number;
+                const mechanism = anchor.mechanism || 'energy';
+
+                // Find lessons connected to this anchor
+                const connectedLessons = lessons.filter(l =>
+                    l.timeline_context?.anchor_connections?.includes(num)
+                );
+
+                return `
+                    <div class="timeline-anchor">
+                        <div class="timeline-anchor-marker ${mechanism}"></div>
+                        <div class="timeline-anchor-content">
+                            <div class="timeline-anchor-header">
+                                <span class="timeline-anchor-title">${num}. ${anchor.title}</span>
+                                <span class="timeline-anchor-date">${anchor.date_display}</span>
+                            </div>
+                            <div class="timeline-anchor-desc">${anchor.description}</div>
+                            ${connectedLessons.length ? `
+                                <div class="timeline-lessons">
+                                    ${connectedLessons.map(l => `
+                                        <span class="timeline-lesson-chip" onclick="openLesson('${l.slug || l.id}')">${l.title}</span>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
                     </div>
                 `;
-            }
-
-            // Use article format for rich summaries, old format for standard
-            const contentHtml = summary.is_rich
-                ? `<div class="article-content">${markdownToHtml(summary.summary_text)}</div>`
-                : `<p>${summary.summary_text}</p>`;
-
-            document.getElementById('modal-body').innerHTML = `
-                <div class="summary-content">
-                    <h2>${summary.title}</h2>
-                    ${summary.is_rich ? '<span class="badge success" style="margin-bottom: 15px; display: inline-block;">Rich Summary</span>' : ''}
-
-                    ${summary.tldr ? `
-                        <div class="summary-section">
-                            <h4>TL;DR</h4>
-                            <div class="tldr">${summary.tldr}</div>
-                        </div>
-                    ` : ''}
-
-                    ${topicsHtml}
-
-                    <div class="summary-section">
-                        ${summary.is_rich ? '' : '<h4>Summary</h4>'}
-                        ${contentHtml}
-                    </div>
-
-                    ${keyPointsHtml ? `
-                        <div class="summary-section">
-                            <h4>Key Takeaways</h4>
-                            <ul class="key-points">${keyPointsHtml}</ul>
-                        </div>
-                    ` : ''}
-
-                    ${resourcesHtml}
-                </div>
-            `;
-
-            openModal();
+            }).join('');
         }
 
-        // Quiz
+        function renderEntities(type = 'all') {
+            const grid = document.getElementById('entities-grid');
+            if (!entities.length) {
+                grid.innerHTML = '<div class="loading">No entities found</div>';
+                return;
+            }
+
+            let filtered = entities;
+            if (type !== 'all') {
+                filtered = entities.filter(e => e.type === type);
+            }
+
+            grid.innerHTML = filtered.map(e => {
+                const img = e.images?.[0] || LOCAL_CONTENT[e.lessons?.[0]]?.images?.find(i => i.entity_id === e.id);
+                return `
+                    <div class="entity-gallery-card" onclick="openEntity('${e.id}')">
+                        ${img ? `<img class="entity-gallery-image" src="${img.thumbnail_url || img.url}" alt="${e.name}">` :
+                            `<div class="entity-gallery-image" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">
+                                ${e.type === 'person' ? '👤' : e.type === 'building' ? '🏛️' : e.type === 'artwork' ? '🎨' : '📚'}
+                            </div>`}
+                        <div class="entity-gallery-info">
+                            <span class="entity-type">${e.type}</span>
+                            <div class="entity-gallery-name">${e.name}</div>
+                            ${e.dates ? `<div class="entity-gallery-dates">${e.dates}</div>` : ''}
+                            <div class="entity-gallery-desc">${e.description || ''}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openEntity(id) {
+            const entity = entities.find(e => e.id === id);
+            if (!entity) return;
+
+            const img = entity.images?.[0] || Object.values(LOCAL_CONTENT).flatMap(c => c.images || []).find(i => i.entity_id === id);
+
+            document.getElementById('entity-modal-content').innerHTML = `
+                ${img ? `<img src="${img.url}" alt="${entity.name}" style="width:100%;border-radius:8px;margin-bottom:16px;">` : ''}
+                <h2 style="margin-bottom:8px;">${entity.name}</h2>
+                <div style="color:var(--text-secondary);margin-bottom:16px;">
+                    <span class="badge">${entity.type}</span>
+                    ${entity.dates ? `<span style="margin-left:8px;">${entity.dates}</span>` : ''}
+                </div>
+                <p style="line-height:1.7;margin-bottom:16px;">${entity.description || 'No description available.'}</p>
+                ${entity.wikipedia_url ? `<a href="${entity.wikipedia_url}" target="_blank" class="btn secondary" style="margin-top:8px;">Wikipedia →</a>` : ''}
+            `;
+
+            openModal('entity-modal');
+        }
+
+        function renderQuizzes() {
+            const grid = document.getElementById('quizzes-grid');
+            if (!quizzes.length) {
+                grid.innerHTML = '<div class="loading">No quizzes available</div>';
+                return;
+            }
+
+            grid.innerHTML = quizzes.map(q => {
+                const quizProgress = progress[q.id];
+                const badge = quizProgress?.completed
+                    ? `<span class="badge rich">${quizProgress.score}/${q.question_count}</span>`
+                    : `<span class="badge">${q.question_count} questions</span>`;
+
+                return `
+                    <div class="lesson-card" onclick="startQuiz('${q.id}')">
+                        <h3>${q.title}</h3>
+                        <div class="lesson-meta">
+                            ${badge}
+                            <span class="badge">${q.difficulty || 'intermediate'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== QUIZ FUNCTIONS =====
         function startQuiz(id) {
             currentQuiz = quizzes.find(q => q.id === id);
             if (!currentQuiz) return;
@@ -722,24 +1726,22 @@
             currentQuestion = 0;
             quizAnswers = [];
             renderQuestion();
-            openModal();
+            openModal('quiz-modal');
         }
 
         function renderQuestion() {
             const q = currentQuiz.questions[currentQuestion];
             const total = currentQuiz.questions.length;
-            const progressPct = ((currentQuestion) / total) * 100;
+            const progressPct = (currentQuestion / total) * 100;
 
-            document.getElementById('modal-body').innerHTML = `
-                <h2>${currentQuiz.title}</h2>
-
+            document.getElementById('quiz-modal-content').innerHTML = `
+                <h2 style="margin-bottom:16px;">${currentQuiz.title}</h2>
                 <div class="quiz-progress">
                     <span>Question ${currentQuestion + 1}/${total}</span>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progressPct}%"></div>
                     </div>
                 </div>
-
                 <div class="question-card">
                     <div class="question-text">${q.question}</div>
                     <div class="options">
@@ -749,9 +1751,8 @@
                             </div>
                         `).join('')}
                     </div>
-                    <div id="explanation" style="display: none;"></div>
+                    <div id="explanation" style="display:none;"></div>
                 </div>
-
                 <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>
                     ${currentQuestion === total - 1 ? 'See Results' : 'Next Question'}
                 </button>
@@ -762,7 +1763,6 @@
             const q = currentQuiz.questions[currentQuestion];
             const options = document.querySelectorAll('.option');
 
-            // Disable all options
             options.forEach(opt => {
                 opt.classList.add('disabled');
                 if (opt.dataset.key === q.correct_answer) {
@@ -775,19 +1775,10 @@
                 }
             });
 
-            // Show explanation
-            const expEl = document.getElementById('explanation');
-            expEl.innerHTML = `<div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>`;
-            expEl.style.display = 'block';
+            document.getElementById('explanation').innerHTML = `<div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>`;
+            document.getElementById('explanation').style.display = 'block';
 
-            // Record answer
-            quizAnswers.push({
-                question: currentQuestion,
-                selected: key,
-                correct: key === q.correct_answer
-            });
-
-            // Enable next button
+            quizAnswers.push({ question: currentQuestion, selected: key, correct: key === q.correct_answer });
             document.getElementById('next-btn').disabled = false;
         }
 
@@ -796,60 +1787,48 @@
                 currentQuestion++;
                 renderQuestion();
             } else {
-                showResults();
+                showQuizResults();
             }
         }
 
-        function showResults() {
+        function showQuizResults() {
             const score = quizAnswers.filter(a => a.correct).length;
             const total = currentQuiz.questions.length;
             const pct = Math.round((score / total) * 100);
 
-            // Save progress
-            progress[currentQuiz.id] = {
-                completed: true,
-                score: score,
-                total: total,
-                timestamp: new Date().toISOString()
-            };
+            progress[currentQuiz.id] = { completed: true, score, total, timestamp: new Date().toISOString() };
             saveProgress();
             updateStats();
 
             let message = '';
             if (pct >= 90) message = 'Excellent! You\'ve mastered this topic!';
-            else if (pct >= 70) message = 'Great job! You have a solid understanding.';
-            else if (pct >= 50) message = 'Good effort! Review the summary to strengthen your knowledge.';
-            else message = 'Keep learning! Re-read the summary and try again.';
+            else if (pct >= 70) message = 'Great job! Solid understanding.';
+            else if (pct >= 50) message = 'Good effort! Review the article to strengthen knowledge.';
+            else message = 'Keep learning! Re-read the article and try again.';
 
-            document.getElementById('modal-body').innerHTML = `
+            document.getElementById('quiz-modal-content').innerHTML = `
                 <div class="quiz-results">
                     <h2>Quiz Complete!</h2>
                     <div class="score">${score}/${total}</div>
                     <p>${message}</p>
-                    <br>
-                    <button class="btn" onclick="startQuiz('${currentQuiz.id}')">Try Again</button>
-                    <button class="btn" style="background: var(--border); margin-left: 10px;" onclick="closeModal()">Close</button>
+                    <div style="margin-top:24px;">
+                        <button class="btn" onclick="startQuiz('${currentQuiz.id}')">Try Again</button>
+                        <button class="btn secondary" style="margin-left:8px;" onclick="closeModal('quiz-modal')">Close</button>
+                    </div>
                 </div>
             `;
         }
 
-        // Close modal on outside click
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target.id === 'modal') closeModal();
-        });
-
-        // Init - wait for Supabase to load
-        function init() {
-            if (typeof window.supabase === 'undefined') {
-                setTimeout(init, 100);
-                return;
-            }
-            // Create client after library is loaded
-            db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            loadProgress();
-            fetchData();
+        // ===== MODAL HELPERS =====
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
         }
 
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // ===== INIT =====
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
