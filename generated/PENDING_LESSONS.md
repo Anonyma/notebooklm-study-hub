@@ -6,7 +6,7 @@
 
 ---
 
-## BATCH 1: Architecture (6 of 8 complete)
+## BATCH 1: Architecture (7 of 8 complete)
 
 - [x] Why_Brutalism_Started_With_Floral_Wallpaper
 - [x] Art_Deco_Fused_King_Tut_With_Chrome
@@ -14,7 +14,7 @@
 - [x] Rococo_curves_to_Brutalist_blocks
 - [x] The_Glamour_and_Geometry_of_Art_Deco
 - [x] Ornament_to_Austerity_Political_Necessity_or_Purity
-- [ ] Architecture_as_a_Trauma_Response
+- [x] Architecture_as_a_Trauma_Response
 - [ ] How_Irony_Killed_the_Glass_Box
 
 ## BATCH 2: History & Timeline (0 of 6 complete)
@@ -55,12 +55,12 @@
 
 | Batch | Complete | Pending | Total |
 |-------|----------|---------|-------|
-| Architecture | 6 | 2 | 8 |
+| Architecture | 7 | 1 | 8 |
 | History | 0 | 6 | 6 |
 | Culture | 0 | 6 | 6 |
 | Materials | 0 | 5 | 5 |
 | Economics | 0 | 3 | 3 |
-| **Total** | **6** | **22** | **28** |
+| **Total** | **7** | **21** | **28** |
 
 ## Next Steps
 
