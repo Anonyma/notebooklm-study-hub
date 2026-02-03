@@ -379,7 +379,26 @@
         .article-sidebar {
             position: sticky;
             top: 24px;
-            height: fit-content;
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .article-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .article-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .article-sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .article-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
         }
 
         .sidebar-section {
@@ -641,6 +660,18 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-bottom: 12px;
+        }
+
+        .timeline-wiki-link {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: none;
+            margin-bottom: 12px;
+        }
+
+        .timeline-wiki-link:hover {
+            text-decoration: underline;
         }
 
         .timeline-lessons {
@@ -1211,7 +1242,13 @@
             // Load generated JSON files for rich content
             const files = [
                 'Why_Brutalism_Started_With_Floral_Wallpaper',
-                'Art_Nouveau_The_Brief_Beautiful_Dream'
+                'Art_Nouveau_The_Brief_Beautiful_Dream',
+                'Art_Deco_Fused_King_Tut_With_Chrome',
+                'Rococo_curves_to_Brutalist_blocks',
+                'The_Glamour_and_Geometry_of_Art_Deco',
+                'Ornament_to_Austerity_Political_Necessity_or_Purity',
+                'Architecture_as_a_Trauma_Response',
+                'How_Irony_Killed_the_Glass_Box'
             ];
 
             for (const file of files) {
@@ -1510,7 +1547,7 @@
                                     <div class="timeline-indicator">
                                         <div class="timeline-dot ${a.mechanism}"></div>
                                         <div class="timeline-info">
-                                            <div class="timeline-anchor-num">Anchor ${a.number || a.anchor_number}</div>
+                                            <div class="timeline-anchor-date">${a.date_display || ''}</div>
                                             <div class="timeline-anchor-title">${a.title}</div>
                                         </div>
                                     </div>
@@ -1629,6 +1666,7 @@
                                 <span class="timeline-anchor-date">${anchor.date_display}</span>
                             </div>
                             <div class="timeline-anchor-desc">${anchor.description}</div>
+                            ${anchor.wikipedia_url ? `<a href="${anchor.wikipedia_url}" target="_blank" class="timeline-wiki-link">Learn more on Wikipedia →</a>` : ''}
                             ${connectedLessons.length ? `
                                 <div class="timeline-lessons">
                                     ${connectedLessons.map(l => `
