@@ -1,8 +1,13 @@
-# Pending Lessons for Rich Content Generation
+# NotebookLM Study Hub - Lesson Status
+
+## STATUS: 36 LESSONS COMPLETE ✅
+
+All 36 lessons generated with rich encyclopedic content.
+**Vienna batch audio generation in progress** (Gemini CLI on CandyPop).
 
 ## Status Legend
 - [x] Complete - Rich article, entities, images, timeline connections
-- [ ] Pending - Awaiting generation
+- [~] Audio pending - Lesson complete, NotebookLM audio in progress
 
 ---
 
@@ -84,3 +89,32 @@ Each lesson JSON should include:
 ---
 
 *Last updated: 2026-02-03*
+
+## BATCH 6: Vienna Deep Dives (8 of 8 complete) ✅🎙️
+
+- [~] Fin_de_Siecle_Vienna_The_Explosion_That_Changed_Everything *(audio pending)*
+- [~] The_Habsburg_Machine_How_an_Empire_Shaped_a_City *(audio pending)*
+- [~] Viennas_Sound_From_Mozart_to_the_Death_of_Tonality *(audio pending)*
+- [~] Red_Vienna_The_Socialist_Utopia_That_Got_Built *(audio pending)*
+- [~] Adolf_Loos_Ornament_and_Crime *(audio pending)*
+- [~] Freuds_Vienna_How_One_City_Invented_the_Unconscious *(audio pending)*
+- [~] The_Ringstrasse_Vienna_Rebuilt_Itself_as_a_Statement *(audio pending)*
+- [~] Vienna_1938_1955_Anschluss_War_and_the_Cold_War_City *(audio pending)*
+
+---
+
+## Audio Generation Status
+
+**In Progress:** Gemini CLI agent on CandyPop generating 8 long-form (60-min) NotebookLM audio overviews for Vienna batch using customized prompts.
+
+**Prompts location:** `~/vienna-notebooklm-prompts.md` on CandyPop
+
+**Next steps after audio generation:**
+1. Download audio files from NotebookLM
+2. Transcribe using Whisper (whisper-1 API)
+3. Upload transcripts to Supabase
+4. Link to lesson content
+
+---
+
+*Last updated: 2026-02-08*
