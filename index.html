@@ -1019,6 +1019,242 @@
         .md-table tbody tr:last-child td {
             border-bottom: none;
         }
+
+        /* Entity Wikipedia links */
+        .entity-wiki-link {
+            display: inline-block;
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-decoration: none;
+            margin-top: 2px;
+        }
+        .entity-wiki-link:hover { text-decoration: underline; }
+
+        /* Back-to-top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 90;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .back-to-top:hover { background: var(--accent-dim); }
+
+        /* Enhanced article badge */
+        .badge.enhanced {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ===== CARD IMAGES (Phase 3) ===== */
+        .lesson-card-image {
+            height: 160px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 16px -20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .lesson-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .lesson-card-gradient {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        .gradient-architecture { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1a3352 100%); }
+        .gradient-history { background: linear-gradient(135deg, #5c3d1a 0%, #8b6914 50%, #6b4c1e 100%); }
+        .gradient-culture { background: linear-gradient(135deg, #4a1942 0%, #6b2fa0 50%, #3d1566 100%); }
+        .gradient-materials { background: linear-gradient(135deg, #1a4a3d 0%, #2d7a5f 50%, #1a5c42 100%); }
+        .gradient-science { background: linear-gradient(135deg, #1a2a4a 0%, #2a4a8a 50%, #1a3366 100%); }
+        .gradient-vienna { background: linear-gradient(135deg, #4a1a1a 0%, #8b3030 50%, #662020 100%); }
+        .gradient-economics { background: linear-gradient(135deg, #2a3a1a 0%, #4a6a2a 50%, #3a5520 100%); }
+
+        /* ===== ARTICLE FORMATTING (Phase 2) ===== */
+        .article-body .drop-cap::first-letter {
+            float: left;
+            font-size: 3.5rem;
+            line-height: 0.8;
+            padding-right: 8px;
+            padding-top: 4px;
+            color: var(--accent);
+            font-weight: 700;
+            font-family: var(--font-serif);
+        }
+        .article-body blockquote, .article-body .callout-quote {
+            border-left: 4px solid var(--accent);
+            background: var(--accent-glow);
+            padding: 16px 20px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: var(--text);
+        }
+        .article-body .callout-box {
+            border-left: 4px solid var(--warning);
+            background: rgba(245, 158, 11, 0.08);
+            padding: 16px 20px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .article-body .callout-box.definition {
+            border-left-color: var(--success);
+            background: rgba(34, 197, 94, 0.08);
+        }
+        .article-body .callout-box .callout-label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 6px;
+        }
+        .article-body .callout-box.definition .callout-label {
+            color: var(--success);
+        }
+        .article-body .highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+            margin: 24px 0;
+        }
+        .article-body .highlight-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .article-body .highlight-card strong {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ===== FLOATING TOC (Phase 4) ===== */
+        .toc-fab {
+            position: fixed;
+            bottom: 80px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 90;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .toc-fab.visible { display: flex; }
+        .toc-fab:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .toc-panel {
+            position: fixed;
+            bottom: 134px;
+            right: 24px;
+            width: 280px;
+            max-height: 60vh;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            z-index: 91;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .toc-panel.open { display: block; }
+        .toc-panel-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+        .toc-link {
+            display: block;
+            padding: 6px 0 6px 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+            padding-left: 12px;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+        .toc-link:hover { color: var(--accent); }
+        .toc-link.active {
+            color: var(--accent);
+            border-left-color: var(--accent);
+        }
+        .toc-link.toc-h3 {
+            padding-left: 24px;
+            font-size: 0.8rem;
+        }
+
+        /* Image fallback placeholder (Phase 5) */
+        .image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: var(--card);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            min-height: 120px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            text-align: center;
+            margin: 32px 0;
+        }
+        .image-placeholder .placeholder-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        /* Additional categories in sidebar */
+        @media (max-width: 768px) {
+            .toc-panel {
+                right: 8px;
+                left: 8px;
+                width: auto;
+                bottom: 120px;
+            }
+            .back-to-top { bottom: 16px; right: 16px; }
+            .toc-fab { bottom: 68px; right: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -1057,6 +1293,15 @@
                 </div>
                 <div class="nav-item" data-filter="materials">
                     <span class="nav-icon">⚗️</span> Materials
+                </div>
+                <div class="nav-item" data-filter="science">
+                    <span class="nav-icon">🧬</span> Science
+                </div>
+                <div class="nav-item" data-filter="vienna">
+                    <span class="nav-icon">🏰</span> Vienna
+                </div>
+                <div class="nav-item" data-filter="economics">
+                    <span class="nav-icon">📊</span> Economics
                 </div>
             </nav>
 
@@ -1154,6 +1399,14 @@
         </main>
     </div>
 
+    <!-- Floating UI -->
+    <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+    <button class="toc-fab" id="toc-fab" onclick="toggleToc()">☰</button>
+    <div class="toc-panel" id="toc-panel">
+        <div class="toc-panel-title">Table of Contents</div>
+        <div id="toc-links"></div>
+    </div>
+
     <!-- Entity Modal -->
     <div class="modal" id="entity-modal">
         <div class="modal-content">
@@ -1174,6 +1427,41 @@
         // ===== CONFIGURATION =====
         const SUPABASE_URL = 'https://ydwjzlikslebokuxzwco.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkd2p6bGlrc2xlYm9rdXh6d2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4NTEwODAsImV4cCI6MjA4NDQyNzA4MH0.CUPTmjww31xOS0-qknpQHByC3ACZ4lk1CiBcVZXHThU';
+
+        // Enhanced articles (manually curated as having best formatting)
+        const ENHANCED_ARTICLES = new Set([
+            'Exploding_Buildings_And_The_End_Of_Truth',
+            'Architecture_Beyond_Postmodernism',
+            'Architecture_as_a_Trauma_Response',
+            'How_Irony_Killed_the_Glass_Box',
+            'Big_History_in_25_Anchor_Dates',
+            'CRISPR_2_Base_Prime_Epigenetic_Editing',
+            'Neuroscience_Consciousness_Perception',
+            'Philosophy_Technology_AI_Ethics'
+        ]);
+
+        // Category detection from slug/title/themes
+        function detectCategory(lesson) {
+            const slug = (lesson.slug || '').toLowerCase();
+            const title = (lesson.title || '').toLowerCase();
+            const themes = (lesson.metadata?.themes || []).map(t => t.toLowerCase());
+            const all = slug + ' ' + title + ' ' + themes.join(' ');
+
+            if (/vienna|habsburg|ringstrasse|anschluss|fin.de.siecle|freud.*vienna|red.vienna/.test(all)) return 'vienna';
+            if (/architect|brutalis|art.nouveau|art.deco|rococo|ornament|postmodern|glass.box|loos/.test(all)) return 'architecture';
+            if (/crispr|neuroscien|microbiome|senolytic|bbb.cross|brain|cellular|gene.edit|consciousness/.test(all)) return 'science';
+            if (/material|iron|sugar|mirror|silicon|six.material|physical.material/.test(all)) return 'materials';
+            if (/econom|automat|basic.income|jobless|post.work|ubi/.test(all)) return 'economics';
+            if (/japan|samurai|shogun|meiji/.test(all)) return 'history';
+            if (/histor|america|cahokia|reconstruction|washington|versailles|native.cit|big.history|anchor.date/.test(all)) return 'history';
+            if (/literat|beat|jazz|fiction|refusal|dream|revolution|markup|culture/.test(all)) return 'culture';
+            return 'history';
+        }
+
+        const CATEGORY_ICONS = {
+            architecture: '🏗️', history: '🌍', culture: '🎭', materials: '⚗️',
+            science: '🧬', vienna: '🏰', economics: '📊'
+        };
 
         // ===== STATE =====
         let db = null;
@@ -1303,7 +1591,27 @@
                 // Economics & Future
                 'Automation_Shock_and_the_Post-Work_Transition',
                 'Universal_Basic_Income_vs_The_Jobless_Future',
-                'Exploding_Buildings_And_The_End_Of_Truth'
+                'Exploding_Buildings_And_The_End_Of_Truth',
+                // Science & Technology
+                'BBB_Crossing_Technologies',
+                'CRISPR_2_Base_Prime_Epigenetic_Editing',
+                'Microbiome_Gut_Brain_Axis',
+                'Neuroscience_Consciousness_Perception',
+                'Senolytics_Cellular_Senescence',
+                'Philosophy_Technology_AI_Ethics',
+                // Architecture (additional)
+                'Architecture_Beyond_Postmodernism',
+                'Adolf_Loos_Ornament_and_Crime',
+                // Japanese History
+                'Japanese_History_Culture_Power_Transformation',
+                // Vienna series
+                'Fin_de_Siecle_Vienna_The_Explosion_That_Changed_Everything',
+                'Freuds_Vienna_How_One_City_Invented_the_Unconscious',
+                'Red_Vienna_The_Socialist_Utopia_That_Got_Built',
+                'The_Habsburg_Machine_How_an_Empire_Shaped_a_City',
+                'The_Ringstrasse_Vienna_Rebuilt_Itself_as_a_Statement',
+                'Vienna_1938_1955_Anschluss_War_and_the_Cold_War_City',
+                'Viennas_Sound_From_Mozart_to_the_Death_of_Tonality'
             ];
 
             for (const file of files) {
@@ -1485,12 +1793,109 @@
                 });
             });
 
+            // Category filters
+            document.querySelectorAll('.nav-item[data-filter]').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    showView('lessons');
+                    filterLessons(item.dataset.filter);
+                });
+            });
+
             // Modal close on outside click
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) closeModal(modal.id);
                 });
             });
+
+            // Back-to-top scroll listener
+            const backToTop = document.getElementById('back-to-top');
+            window.addEventListener('scroll', () => {
+                backToTop.classList.toggle('visible', window.scrollY > 400);
+            }, { passive: true });
+        }
+
+        // Category filtering
+        function filterLessons(category) {
+            const grid = document.getElementById('lessons-grid');
+            const filtered = category === 'all' ? lessons : lessons.filter(l => detectCategory(l) === category);
+            // Re-render with filtered list using same card template
+            grid.innerHTML = filtered.map(l => {
+                const era = l.timeline_context?.primary_era || '';
+                const cat = detectCategory(l);
+                const firstImg = l.images?.[0];
+                const isEnhanced = ENHANCED_ARTICLES.has(l.slug);
+                const cardImage = firstImg
+                    ? `<div class="lesson-card-image"><img src="${firstImg.thumbnail_url || firstImg.url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'lesson-card-gradient gradient-${cat}\\'>${CATEGORY_ICONS[cat] || '📚'}</div>'"></div>`
+                    : `<div class="lesson-card-image"><div class="lesson-card-gradient gradient-${cat}">${CATEGORY_ICONS[cat] || '📚'}</div></div>`;
+                return `
+                    <div class="lesson-card" onclick="openLesson('${l.slug || l.id}')">
+                        ${cardImage}
+                        <h3>${l.title}</h3>
+                        <p>${l.tldr || l.article?.substring(0, 150) || 'No summary available'}...</p>
+                        <div class="lesson-meta">
+                            ${isEnhanced ? '<span class="badge enhanced">Enhanced</span>' : ''}
+                            ${l.is_rich ? '<span class="badge rich">Rich Article</span>' : '<span class="badge pending">Basic</span>'}
+                            ${era ? `<span class="badge era">${era}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== TOC FUNCTIONS =====
+        let tocObserver = null;
+
+        function toggleToc() {
+            document.getElementById('toc-panel').classList.toggle('open');
+        }
+
+        function buildToc() {
+            const articleBody = document.querySelector('.article-body');
+            const tocFab = document.getElementById('toc-fab');
+            const tocLinks = document.getElementById('toc-links');
+            const tocPanel = document.getElementById('toc-panel');
+
+            if (!articleBody) {
+                tocFab.classList.remove('visible');
+                tocPanel.classList.remove('open');
+                return;
+            }
+
+            const headings = articleBody.querySelectorAll('h2[id], h3');
+            if (headings.length < 2) {
+                tocFab.classList.remove('visible');
+                return;
+            }
+
+            // Ensure h3s have IDs too
+            headings.forEach((h, i) => {
+                if (!h.id) {
+                    h.id = 'section-h3-' + i;
+                }
+            });
+
+            tocFab.classList.add('visible');
+            tocLinks.innerHTML = Array.from(headings).map(h => {
+                const isH3 = h.tagName === 'H3';
+                return `<a class="toc-link ${isH3 ? 'toc-h3' : ''}" href="#${h.id}" data-target="${h.id}" onclick="event.preventDefault();document.getElementById('${h.id}').scrollIntoView({behavior:'smooth',block:'start'})">${h.textContent}</a>`;
+            }).join('');
+
+            // Scroll spy with IntersectionObserver
+            if (tocObserver) tocObserver.disconnect();
+            tocObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+                        const link = document.querySelector(`.toc-link[data-target="${entry.target.id}"]`);
+                        if (link) link.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-20% 0px -70% 0px' });
+
+            headings.forEach(h => tocObserver.observe(h));
         }
 
         // ===== VIEW MANAGEMENT =====
@@ -1505,6 +1910,13 @@
             if (viewEl) {
                 viewEl.style.display = 'block';
                 viewEl.classList.add('active');
+            }
+
+            // Hide TOC when not in article view
+            if (view !== 'article') {
+                document.getElementById('toc-fab').classList.remove('visible');
+                document.getElementById('toc-panel').classList.remove('open');
+                if (tocObserver) tocObserver.disconnect();
             }
 
             renderCurrentView();
@@ -1529,11 +1941,20 @@
 
             grid.innerHTML = lessons.map(l => {
                 const era = l.timeline_context?.primary_era || '';
+                const category = detectCategory(l);
+                const firstImg = l.images?.[0];
+                const isEnhanced = ENHANCED_ARTICLES.has(l.slug);
+                const cardImage = firstImg
+                    ? `<div class="lesson-card-image"><img src="${firstImg.thumbnail_url || firstImg.url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'lesson-card-gradient gradient-${category}\\'>${CATEGORY_ICONS[category] || '📚'}</div>'"></div>`
+                    : `<div class="lesson-card-image"><div class="lesson-card-gradient gradient-${category}">${CATEGORY_ICONS[category] || '📚'}</div></div>`;
+
                 return `
                     <div class="lesson-card" onclick="openLesson('${l.slug || l.id}')">
+                        ${cardImage}
                         <h3>${l.title}</h3>
                         <p>${l.tldr || l.article?.substring(0, 150) || 'No summary available'}...</p>
                         <div class="lesson-meta">
+                            ${isEnhanced ? '<span class="badge enhanced">Enhanced</span>' : ''}
                             ${l.is_rich ? '<span class="badge rich">Rich Article</span>' : '<span class="badge pending">Basic</span>'}
                             ${era ? `<span class="badge era">${era}</span>` : ''}
                             ${l.key_takeaways?.length ? `<span class="badge">${l.key_takeaways.length} takeaways</span>` : ''}
@@ -1630,6 +2051,7 @@
                                         <div class="entity-info">
                                             <div class="entity-name">${e.name}</div>
                                             <div class="entity-dates">${e.dates || ''}</div>
+                                            ${e.wikipedia_url ? `<a href="${e.wikipedia_url}" target="_blank" class="entity-wiki-link" onclick="event.stopPropagation()">Wikipedia →</a>` : ''}
                                         </div>
                                     </div>
                                 `).join('')}
@@ -1639,8 +2061,9 @@
                 </div>
             `;
 
-            // Scroll to top
+            // Scroll to top and build TOC
             window.scrollTo(0, 0);
+            setTimeout(buildToc, 100);
         }
 
         function markdownToHtml(text, images = []) {
@@ -1680,21 +2103,66 @@
             }
             text = processed.join('\n');
 
+            // Blockquotes: > text
+            let blockquoteProcessed = [];
+            let inBlockquote = false;
+            let bqLines = [];
+            processed.forEach((line, idx) => {
+                if (typeof line === 'string' && line.trim().startsWith('> ')) {
+                    bqLines.push(line.trim().substring(2));
+                    inBlockquote = true;
+                } else {
+                    if (inBlockquote) {
+                        blockquoteProcessed.push('<blockquote>' + bqLines.join('<br>') + '</blockquote>');
+                        bqLines = [];
+                        inBlockquote = false;
+                    }
+                    blockquoteProcessed.push(line);
+                }
+            });
+            if (inBlockquote) {
+                blockquoteProcessed.push('<blockquote>' + bqLines.join('<br>') + '</blockquote>');
+            }
+            text = blockquoteProcessed.join('\n');
+
             let html = text
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gim, (m, title) => `<h3>${title}</h3>`)
+                .replace(/^## (.*$)/gim, (m, title) => {
+                    const id = title.toLowerCase().replace(/<[^>]+>/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                    return `<h2 id="section-${id}">${title}</h2>`;
+                })
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/\n\n/g, '</p><p>')
                 .replace(/^- (.*$)/gim, '<li>$1</li>');
 
+            // Smart callout detection
+            html = html.replace(/<p>(Key Point|Important|Note|Warning):\s*(.*?)<\/p>/gi, (m, label, content) => {
+                return `<div class="callout-box"><div class="callout-label">${label}</div>${content}</div>`;
+            });
+            html = html.replace(/<p>(Definition):\s*(.*?)<\/p>/gi, (m, label, content) => {
+                return `<div class="callout-box definition"><div class="callout-label">${label}</div>${content}</div>`;
+            });
+
             // Wrap in paragraphs
             html = '<p>' + html + '</p>';
             html = html.replace(/<p><h/g, '<h').replace(/<\/h([123])><\/p>/g, '</h$1>');
             html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
-            // Don't wrap tables in paragraphs
+            // Don't wrap tables, blockquotes, or callouts in paragraphs
             html = html.replace(/<p>(<table)/g, '$1').replace(/<\/table><\/p>/g, '</table>');
+            html = html.replace(/<p>(<blockquote)/g, '$1').replace(/<\/blockquote><\/p>/g, '</blockquote>');
+            html = html.replace(/<p>(<div class="callout)/g, '$1').replace(/<\/div><\/p>/g, '</div>');
+
+            // Highlight cards: detect 3+ consecutive <li><strong>Term:</strong> desc</li>
+            html = html.replace(/<ul>((?:\s*<li><strong>[^<]+<\/strong>[^<]*<\/li>\s*){3,})<\/ul>/g, (match, items) => {
+                const cards = items.replace(/<li><strong>([^<]+)<\/strong>\s*(.*?)<\/li>/g,
+                    '<div class="highlight-card"><strong>$1</strong>$2</div>');
+                return '<div class="highlight-grid">' + cards + '</div>';
+            });
+
+            // Drop cap on first paragraph
+            html = html.replace(/<p>/, '<p class="drop-cap">');
 
             // Build a slug from h2 text for named section matching
             function slugify(t) {
@@ -1705,7 +2173,7 @@
             const imgTemplate = (img) => `
                 <figure class="article-image">
                     <img src="${img.thumbnail_url || img.url}" alt="${(img.caption || '').replace(/"/g, '&quot;')}" loading="lazy"
-                         onerror="this.closest('.article-image').style.display='none'">
+                         onerror="this.outerHTML='<div class=\\'image-placeholder\\'><div class=\\'placeholder-icon\\'>🖼️</div>${(img.caption || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')}</div>'">
                     <figcaption>${img.caption || ''} <small style="color:var(--text-dim)">${img.attribution || ''}</small></figcaption>
                 </figure>`;
 
