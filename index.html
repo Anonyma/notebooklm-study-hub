@@ -6,38 +6,105 @@
     <title>NotebookLM Study Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
         :root {
-            --bg: #0a0a0a;
-            --bg-elevated: #111111;
-            --card: #1a1a1a;
-            --card-hover: #222222;
-            --border: #2a2a2a;
-            --border-subtle: #1f1f1f;
-            --text: #e8e8e8;
-            --text-secondary: #a0a0a0;
-            --text-dim: #666;
-            --accent: #6366f1;
-            --accent-dim: #4f46e5;
-            --accent-glow: rgba(99, 102, 241, 0.15);
+            --bg: #f5f1ea;
+            --bg-elevated: #fff8ee;
+            --card: #fffdf9;
+            --card-hover: #f7efe4;
+            --border: #e2d6c5;
+            --border-subtle: #efe6d9;
+            --text: #1f1a14;
+            --text-secondary: #5b4f44;
+            --text-dim: #8b7b6a;
+            --accent: #c2410c;
+            --accent-dim: #9a3412;
+            --accent-soft: rgba(194, 65, 12, 0.14);
+            --accent-glow: rgba(15, 118, 110, 0.12);
+            --accent-2: #0f766e;
+            --success: #166534;
+            --warning: #b45309;
+            --error: #b91c1c;
+            --energy: #b45309;
+            --institutions: #15803d;
+            --information: #0f766e;
+            --font-sans: 'Space Grotesk', 'Segoe UI', sans-serif;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+            --shadow: 0 22px 45px rgba(31, 26, 20, 0.12);
+            --shadow-soft: 0 14px 32px rgba(31, 26, 20, 0.08);
+        }
+
+        body.dark {
+            --bg: #0f1114;
+            --bg-elevated: #141824;
+            --card: #161b26;
+            --card-hover: #1d2433;
+            --border: #2a3244;
+            --border-subtle: #232b3c;
+            --text: #f3efe9;
+            --text-secondary: #c7bbac;
+            --text-dim: #a09384;
+            --accent: #ff9155;
+            --accent-dim: #e17038;
+            --accent-soft: rgba(255, 145, 85, 0.16);
+            --accent-glow: rgba(125, 211, 252, 0.08);
+            --accent-2: #7dd3fc;
             --success: #22c55e;
             --warning: #f59e0b;
             --error: #ef4444;
             --energy: #f59e0b;
-            --institutions: #22c55e;
-            --information: #6366f1;
-            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-serif: Georgia, 'Times New Roman', serif;
-            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            --institutions: #34d399;
+            --information: #7dd3fc;
+            --shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+            --shadow-soft: 0 18px 38px rgba(0, 0, 0, 0.28);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: var(--font-sans);
-            background: var(--bg);
+            background: radial-gradient(circle at 10% 0%, rgba(194, 65, 12, 0.08), transparent 45%),
+                        radial-gradient(circle at 90% 10%, rgba(15, 118, 110, 0.12), transparent 50%),
+                        var(--bg);
             color: var(--text);
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: 1.65;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 248, 238, 0.2));
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -20% -10% 0 -10%;
+            background-image: repeating-linear-gradient(115deg, rgba(31, 26, 20, 0.04) 0 1px, transparent 1px 18px);
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body.dark {
+            background: radial-gradient(circle at 10% 0%, rgba(255, 145, 85, 0.12), transparent 45%),
+                        radial-gradient(circle at 90% 10%, rgba(125, 211, 252, 0.12), transparent 50%),
+                        var(--bg);
+        }
+
+        body.dark::before {
+            background: linear-gradient(140deg, rgba(30, 36, 50, 0.92), rgba(15, 17, 20, 0.4));
+        }
+
+        body.dark::after {
+            background-image: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 18px);
+            opacity: 0.25;
         }
 
         /* ===== LAYOUT ===== */
@@ -48,25 +115,33 @@
 
         .sidebar {
             width: 280px;
-            background: var(--bg-elevated);
+            background: rgba(255, 248, 238, 0.92);
             border-right: 1px solid var(--border);
             padding: 20px;
             position: fixed;
             height: 100vh;
             overflow-y: auto;
             z-index: 50;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(10px);
+        }
+
+        body.dark .sidebar {
+            background: rgba(20, 24, 36, 0.92);
         }
 
         .main-content {
             flex: 1;
             margin-left: 280px;
             min-height: 100vh;
+            background: transparent;
         }
 
         /* ===== SIDEBAR ===== */
         .logo {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
+            font-family: var(--font-serif);
             margin-bottom: 8px;
             color: var(--text);
         }
@@ -75,6 +150,8 @@
             font-size: 0.75rem;
             color: var(--text-dim);
             margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .nav-section {
@@ -84,7 +161,7 @@
         .nav-section-title {
             font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.12em;
             color: var(--text-dim);
             margin-bottom: 8px;
             padding-left: 12px;
@@ -100,21 +177,50 @@
             color: var(--text-secondary);
             transition: all 0.15s;
             font-size: 0.9rem;
+            border: 1px solid transparent;
         }
 
         .nav-item:hover {
             background: var(--card);
             color: var(--text);
+            border-color: var(--border);
+            transform: translateX(2px);
         }
 
         .nav-item.active {
-            background: var(--accent-glow);
+            background: var(--accent-soft);
             color: var(--accent);
+            border-color: rgba(194, 65, 12, 0.3);
+            font-weight: 600;
         }
 
         .nav-icon {
             width: 18px;
             text-align: center;
+        }
+
+        .theme-toggle {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .theme-toggle .theme-icon {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
         }
 
         .stats-grid {
@@ -131,12 +237,15 @@
             padding: 12px;
             border-radius: 8px;
             text-align: center;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-soft);
         }
 
         .stat-value {
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--accent);
+            font-family: var(--font-serif);
         }
 
         .stat-label {
@@ -147,14 +256,16 @@
 
         /* ===== HEADER ===== */
         .page-header {
-            padding: 24px 40px;
+            padding: 32px 40px 28px;
             border-bottom: 1px solid var(--border);
-            background: var(--bg-elevated);
+            background: linear-gradient(135deg, rgba(255, 248, 238, 0.9), rgba(255, 255, 255, 0.6));
+            box-shadow: var(--shadow-soft);
         }
 
         .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 2.1rem;
+            font-weight: 700;
+            font-family: var(--font-serif);
             margin-bottom: 4px;
         }
 
@@ -181,18 +292,26 @@
             padding: 20px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            animation: rise 0.5s ease both;
+            animation-delay: calc(var(--stagger, 0) * 35ms);
         }
 
         .lesson-card:hover {
             background: var(--card-hover);
             border-color: var(--accent);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
         }
 
         .lesson-card h3 {
             font-size: 1rem;
             margin-bottom: 8px;
             line-height: 1.4;
+            font-family: var(--font-serif);
         }
 
         .lesson-card p {
@@ -200,6 +319,10 @@
             font-size: 0.85rem;
             line-height: 1.5;
             margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .lesson-meta {
@@ -213,16 +336,179 @@
             align-items: center;
             gap: 4px;
             padding: 4px 8px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 0.7rem;
             font-weight: 500;
-            background: var(--border);
+            background: rgba(31, 26, 20, 0.08);
             color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .badge.rich { background: rgba(34, 197, 94, 0.15); color: var(--success); }
-        .badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-        .badge.era { background: var(--accent-glow); color: var(--accent); }
+        .badge.rich { background: rgba(15, 118, 110, 0.12); color: var(--accent-2); border-color: rgba(15, 118, 110, 0.2); }
+        .badge.pending { background: rgba(31, 26, 20, 0.05); color: var(--text-dim); }
+        .badge.era { background: rgba(180, 83, 9, 0.12); color: var(--warning); border-color: rgba(180, 83, 9, 0.2); }
+
+        .header-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+            color: var(--accent-2);
+            margin-bottom: 6px;
+        }
+
+        /* ===== NOTEBOOKS ===== */
+        .notebooks-container {
+            padding: 24px 40px 40px;
+            display: none;
+        }
+
+        .notebooks-container.active {
+            display: block;
+        }
+
+        .notebook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .notebook-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            animation: rise 0.5s ease both;
+            animation-delay: calc(var(--stagger, 0) * 35ms);
+        }
+
+        .notebook-card .btn {
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        .notebook-card::before {
+            content: "";
+            position: absolute;
+            right: -60px;
+            top: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(194, 65, 12, 0.15), transparent 70%);
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .notebook-title {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+
+        .notebook-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            z-index: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notebook-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            z-index: 1;
+        }
+
+        .notebook-tag {
+            background: rgba(15, 118, 110, 0.12);
+            color: var(--accent-2);
+            border: 1px solid rgba(15, 118, 110, 0.2);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .notebook-lessons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 1;
+        }
+
+        .notebook-lessons details {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: rgba(31, 26, 20, 0.04);
+        }
+
+        .notebook-lessons summary {
+            cursor: pointer;
+            list-style: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .notebook-lessons summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .notebook-lessons .lesson-chip-list {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .notebook-title-link {
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .notebook-title-link:hover {
+            color: var(--accent);
+        }
+
+        .notebook-lesson-chip {
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(31, 26, 20, 0.06);
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notebook-lesson-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
 
         /* ===== ARTICLE VIEW ===== */
         .article-container {
@@ -230,6 +516,10 @@
             max-width: 900px;
             margin: 0 auto;
             padding: 40px;
+            background: rgba(255, 253, 249, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
         }
 
         .article-container.active {
@@ -260,6 +550,7 @@
             font-weight: 700;
             line-height: 1.3;
             margin-bottom: 16px;
+            font-family: var(--font-serif);
         }
 
         .article-meta {
@@ -283,6 +574,27 @@
             display: grid;
             grid-template-columns: 1fr 260px;
             gap: 40px;
+            position: relative;
+        }
+
+        .sidebar-toggle {
+            margin-top: 16px;
+            align-self: flex-start;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-toggle:hover {
+            border-color: var(--accent-2);
+            color: var(--accent-2);
         }
 
         .article-body {
@@ -290,6 +602,7 @@
             font-size: 1.1rem;
             line-height: 1.8;
             color: var(--text);
+            font-weight: 400;
         }
 
         .article-body h2 {
@@ -314,6 +627,7 @@
 
         .article-body p {
             margin-bottom: 20px;
+            font-weight: 400;
         }
 
         .article-body strong {
@@ -332,39 +646,250 @@
 
         /* TLDR Box */
         .tldr-box {
-            background: var(--accent-glow);
-            border-left: 4px solid var(--accent);
-            padding: 20px 24px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 32px;
+            background: linear-gradient(135deg, rgba(194, 65, 12, 0.14), rgba(15, 118, 110, 0.08));
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            border-radius: 14px;
+            margin-bottom: 28px;
+            display: grid;
+            gap: 8px;
         }
 
         .tldr-label {
             font-family: var(--font-sans);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--accent);
-            margin-bottom: 8px;
+            letter-spacing: 0.14em;
+            color: var(--text-dim);
         }
 
         .tldr-text {
             font-size: 1rem;
-            line-height: 1.6;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin: 24px 0 32px;
+        }
+
+        .image-gallery-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .image-gallery-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-gallery-caption {
+            padding: 12px 14px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .anchor-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin: 20px 0 32px;
+        }
+
+        .anchor-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+
+        .anchor-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background: radial-gradient(circle at 60% 40%, rgba(194, 65, 12, 0.3), transparent 60%);
+            opacity: 0.6;
+        }
+
+        .anchor-date {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .anchor-title {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--text);
+        }
+
+        .topic-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0 24px;
+        }
+
+        .topic-chip {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 118, 110, 0.3);
+            color: var(--accent-2);
+            background: rgba(15, 118, 110, 0.08);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 18px 0 32px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 248, 238, 0.35));
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 18px;
+            box-shadow: var(--shadow-soft);
+            font-size: 0.9rem;
+            line-height: 1.55;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark .insight-card {
+            background: linear-gradient(135deg, rgba(22, 27, 38, 0.9), rgba(20, 24, 36, 0.7));
+        }
+
+        .insight-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 12px;
+            bottom: 12px;
+            width: 3px;
+            background: var(--accent);
+            border-radius: 999px;
+            opacity: 0.7;
         }
 
         /* Inline images */
         .article-image {
-            margin: 32px 0;
+            margin: 28px auto;
             border-radius: 8px;
             overflow: hidden;
             background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            max-width: 560px;
+        }
+
+        .article-body::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .article-image.portrait {
+            max-width: 320px;
+            float: right;
+            margin: 12px 0 18px 24px;
         }
 
         .article-image img {
             width: 100%;
             height: auto;
+            max-height: 220px;
+            object-fit: cover;
             display: block;
+        }
+
+        .article-image.portrait img {
+            max-height: 320px;
+            object-fit: contain;
+            background: var(--bg-elevated);
+        }
+
+        .inline-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin: 22px 0 28px;
+        }
+
+        .inline-gallery-item {
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .inline-gallery-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .inline-gallery-item.portrait img {
+            object-fit: contain;
+            background: var(--bg-elevated);
+        }
+
+        .inline-gallery-caption {
+            padding: 10px 12px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .external-links {
+            margin: 24px 0 32px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .external-links h3 {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .external-links ul {
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .external-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .external-links a:hover {
+            text-decoration: underline;
         }
 
         .article-image figcaption {
@@ -375,6 +900,14 @@
             border-top: 1px solid var(--border);
         }
 
+        @media (max-width: 960px) {
+            .article-image.portrait {
+                float: none;
+                margin: 24px auto;
+                max-width: 560px;
+            }
+        }
+
         /* Article sidebar */
         .article-sidebar {
             position: sticky;
@@ -382,6 +915,38 @@
             max-height: calc(100vh - 48px);
             overflow-y: auto;
             padding-right: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-peek {
+            position: absolute;
+            right: -6px;
+            top: 140px;
+            width: 10px;
+            height: 120px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.2);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .article-with-sidebar.sidebar-collapsed .article-sidebar {
+            width: 0;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(16px);
+        }
+
+        .article-with-sidebar.sidebar-collapsed .sidebar-peek {
+            opacity: 1;
+        }
+
+        .article-with-sidebar.sidebar-collapsed .sidebar-peek:hover + .article-sidebar,
+        .article-with-sidebar.sidebar-collapsed .article-sidebar:hover {
+            width: 260px;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
         }
 
         .article-sidebar::-webkit-scrollbar {
@@ -608,6 +1173,8 @@
             position: relative;
             padding: 16px 0 16px 32px;
             cursor: pointer;
+            animation: rise 0.5s ease both;
+            animation-delay: calc(var(--stagger, 0) * 30ms);
         }
 
         .timeline-anchor:hover .timeline-anchor-content {
@@ -636,6 +1203,7 @@
             border-radius: 8px;
             padding: 16px;
             transition: all 0.15s;
+            box-shadow: var(--shadow-soft);
         }
 
         .timeline-anchor-header {
@@ -742,11 +1310,15 @@
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: var(--shadow-soft);
+            animation: rise 0.5s ease both;
+            animation-delay: calc(var(--stagger, 0) * 35ms);
         }
 
         .entity-gallery-card:hover {
             border-color: var(--accent);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
         }
 
         .entity-gallery-image {
@@ -788,6 +1360,121 @@
 
         .quiz-container.active {
             display: block;
+        }
+
+        .quiz-grid {
+            display: grid;
+            gap: 28px;
+        }
+
+        .quiz-toolbar {
+            margin: 18px 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .quiz-group-controls {
+            display: inline-flex;
+            gap: 8px;
+            padding: 4px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--card);
+        }
+
+        .quiz-toggle {
+            border: none;
+            background: transparent;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .quiz-toggle.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .quiz-group {
+            margin-bottom: 28px;
+        }
+
+        .quiz-group-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .quiz-group-title {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .quiz-group-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .quiz-group-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .quiz-group-count {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+        }
+
+        .quiz-card {
+            padding: 18px;
+        }
+
+        .quiz-card .lesson-card-image {
+            height: 120px;
+            margin: -18px -18px 12px -18px;
+        }
+
+        .quiz-card h3 {
+            font-size: 1rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .quiz-card .lesson-meta {
+            margin-top: 8px;
         }
 
         .quiz-progress {
@@ -847,7 +1534,7 @@
             border-color: var(--accent);
         }
 
-        .option.selected { border-color: var(--accent); background: var(--accent-glow); }
+        .option.selected { border-color: var(--accent); background: var(--accent-soft); }
         .option.correct { border-color: var(--success); background: rgba(34, 197, 94, 0.1); }
         .option.incorrect { border-color: var(--error); background: rgba(239, 68, 68, 0.1); }
         .option.disabled { cursor: default; }
@@ -875,11 +1562,12 @@
             font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.15s;
+            box-shadow: var(--shadow-soft);
         }
 
-        .btn:hover { background: var(--accent-dim); }
+        .btn:hover { background: var(--accent-dim); transform: translateY(-1px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn.secondary { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .btn.secondary { background: var(--card); border: 1px solid var(--border); color: var(--text); box-shadow: none; }
 
         .quiz-results {
             text-align: center;
@@ -951,6 +1639,27 @@
             to { transform: rotate(360deg); }
         }
 
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lesson-card,
+            .notebook-card,
+            .entity-gallery-card,
+            .timeline-anchor {
+                animation: none;
+                transform: none;
+            }
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .article-with-sidebar {
@@ -962,6 +1671,9 @@
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
                 gap: 16px;
             }
+            .sidebar-peek {
+                display: none;
+            }
         }
 
         @media (max-width: 768px) {
@@ -971,10 +1683,17 @@
             .main-content {
                 margin-left: 0;
             }
+            .page-header {
+                padding: 24px 20px;
+            }
+            .page-title {
+                font-size: 1.6rem;
+            }
             .lessons-container,
             .timeline-container,
             .entities-container,
             .quiz-container,
+            .notebooks-container,
             .article-container {
                 padding: 16px;
             }
@@ -1050,7 +1769,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(194, 65, 12, 0.35);
         }
         .back-to-top.visible {
             opacity: 1;
@@ -1060,7 +1779,7 @@
 
         /* Enhanced article badge */
         .badge.enhanced {
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(194, 65, 12, 0.15);
             color: var(--accent);
             font-weight: 600;
         }
@@ -1072,6 +1791,7 @@
             margin: -20px -20px 16px -20px;
             overflow: hidden;
             position: relative;
+            border-bottom: 1px solid var(--border);
         }
         .lesson-card-image img {
             width: 100%;
@@ -1086,14 +1806,22 @@
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.92);
         }
-        .gradient-architecture { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1a3352 100%); }
-        .gradient-history { background: linear-gradient(135deg, #5c3d1a 0%, #8b6914 50%, #6b4c1e 100%); }
-        .gradient-culture { background: linear-gradient(135deg, #4a1942 0%, #6b2fa0 50%, #3d1566 100%); }
-        .gradient-materials { background: linear-gradient(135deg, #1a4a3d 0%, #2d7a5f 50%, #1a5c42 100%); }
-        .gradient-science { background: linear-gradient(135deg, #1a2a4a 0%, #2a4a8a 50%, #1a3366 100%); }
-        .gradient-vienna { background: linear-gradient(135deg, #4a1a1a 0%, #8b3030 50%, #662020 100%); }
-        .gradient-economics { background: linear-gradient(135deg, #2a3a1a 0%, #4a6a2a 50%, #3a5520 100%); }
+        .lesson-card-gradient svg {
+            width: 46px;
+            height: 46px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.6;
+        }
+        .gradient-architecture { background: linear-gradient(135deg, #3b2c26 0%, #7a4e2d 55%, #2d221c 100%); }
+        .gradient-history { background: linear-gradient(135deg, #4a3622 0%, #b1843a 55%, #6b4a1f 100%); }
+        .gradient-culture { background: linear-gradient(135deg, #43243a 0%, #9f4d7a 55%, #2f1729 100%); }
+        .gradient-materials { background: linear-gradient(135deg, #2e3b33 0%, #5a7a5a 55%, #1f2f26 100%); }
+        .gradient-science { background: linear-gradient(135deg, #2c3345 0%, #4b6b8c 55%, #1f2633 100%); }
+        .gradient-vienna { background: linear-gradient(135deg, #4a2521 0%, #9b4a3a 55%, #2f1715 100%); }
+        .gradient-economics { background: linear-gradient(135deg, #2f3725 0%, #7a8b3a 55%, #1e2416 100%); }
 
         /* ===== ARTICLE FORMATTING (Phase 2) ===== */
         .article-body .drop-cap::first-letter {
@@ -1108,7 +1836,7 @@
         }
         .article-body blockquote, .article-body .callout-quote {
             border-left: 4px solid var(--accent);
-            background: var(--accent-glow);
+            background: rgba(194, 65, 12, 0.08);
             padding: 16px 20px;
             margin: 24px 0;
             border-radius: 0 8px 8px 0;
@@ -1117,7 +1845,7 @@
         }
         .article-body .callout-box {
             border-left: 4px solid var(--warning);
-            background: rgba(245, 158, 11, 0.08);
+            background: rgba(180, 83, 9, 0.08);
             padding: 16px 20px;
             margin: 24px 0;
             border-radius: 0 8px 8px 0;
@@ -1269,6 +1997,9 @@
                 <div class="nav-item active" data-view="lessons">
                     <span class="nav-icon">📚</span> All Lessons
                 </div>
+                <div class="nav-item" data-view="notebooks">
+                    <span class="nav-icon">🗂️</span> Notebooks
+                </div>
                 <div class="nav-item" data-view="timeline">
                     <span class="nav-icon">📅</span> Timeline
                 </div>
@@ -1323,6 +2054,16 @@
                     <div class="stat-label">Progress</div>
                 </div>
             </div>
+
+            <nav class="nav-section">
+                <div class="nav-section-title">Theme</div>
+                <button class="theme-toggle" id="theme-toggle" type="button">
+                    <span id="theme-label">Dark Mode</span>
+                    <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3a9 9 0 0 0 9 9 9 9 0 1 1-9-9z"></path>
+                    </svg>
+                </button>
+            </nav>
         </aside>
 
         <!-- Main Content -->
@@ -1330,8 +2071,9 @@
             <!-- Lessons View -->
             <div id="lessons-view">
                 <header class="page-header">
-                    <h1 class="page-title">All Lessons</h1>
-                    <p class="page-subtitle">Encyclopedic deep-dives from NotebookLM audio overviews</p>
+                    <div class="header-kicker">Study Atlas</div>
+                    <h1 class="page-title" id="lessons-title">All Lessons</h1>
+                    <p class="page-subtitle" id="lessons-subtitle">Encyclopedic deep-dives from NotebookLM audio overviews</p>
                 </header>
                 <div class="lessons-container">
                     <div id="lessons-grid" class="lesson-grid">
@@ -1339,6 +2081,21 @@
                             <div class="loading-spinner"></div>
                             Loading lessons...
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notebooks View -->
+            <div id="notebooks-view" class="notebooks-container">
+                <header class="page-header">
+                    <div class="header-kicker">Collections</div>
+                    <h1 class="page-title">Notebooks</h1>
+                    <p class="page-subtitle">Group lessons by their original NotebookLM source</p>
+                </header>
+                <div id="notebooks-grid" class="notebook-grid">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Loading notebooks...
                     </div>
                 </div>
             </div>
@@ -1351,7 +2108,8 @@
 
             <!-- Timeline View -->
             <div id="timeline-view" class="timeline-container">
-                <header class="page-header" style="padding-left:0; padding-right:0; background:transparent; border:none;">
+                <header class="page-header">
+                    <div class="header-kicker">Time Map</div>
                     <h1 class="page-title">Timeline of History</h1>
                     <p class="page-subtitle">25 anchor dates from the Big Bang to the World Wide Web</p>
                 </header>
@@ -1370,7 +2128,8 @@
 
             <!-- Entities View -->
             <div id="entities-view" class="entities-container">
-                <header class="page-header" style="padding-left:0; padding-right:0; background:transparent; border:none;">
+                <header class="page-header">
+                    <div class="header-kicker">Gallery</div>
                     <h1 class="page-title">Entity Gallery</h1>
                     <p class="page-subtitle">People, buildings, artworks, and concepts across all lessons</p>
                 </header>
@@ -1388,11 +2147,18 @@
 
             <!-- Quizzes View -->
             <div id="quizzes-view" class="quiz-container">
-                <header class="page-header" style="padding-left:0; padding-right:0; background:transparent; border:none;">
+                <header class="page-header">
+                    <div class="header-kicker">Practice</div>
                     <h1 class="page-title">Quizzes</h1>
                     <p class="page-subtitle">Test your knowledge from the deep dives</p>
+                    <div class="quiz-toolbar">
+                        <div class="quiz-group-controls" id="quiz-group-controls">
+                            <button class="quiz-toggle active" data-mode="notebook">By Notebook</button>
+                            <button class="quiz-toggle" data-mode="topic">By Topic</button>
+                        </div>
+                    </div>
                 </header>
-                <div id="quizzes-grid" class="lesson-grid">
+                <div id="quizzes-grid" class="quiz-grid">
                     <div class="loading">Loading quizzes...</div>
                 </div>
             </div>
@@ -1459,24 +2225,74 @@
         }
 
         const CATEGORY_ICONS = {
-            architecture: '🏗️', history: '🌍', culture: '🎭', materials: '⚗️',
-            science: '🧬', vienna: '🏰', economics: '📊'
+            architecture: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M6 21V7l6-3 6 3v14M9 21v-6h6v6"></path></svg>',
+            history: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>',
+            culture: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5l2.6 5.1 5.7.8-4.1 4 .9 5.7-5.1-2.7-5.1 2.7.9-5.7-4.1-4 5.7-.8z"></path></svg>',
+            materials: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v5l-4 7a4 4 0 0 0 3.5 6h5a4 4 0 0 0 3.5-6l-4-7V3"></path></svg>',
+            science: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"></circle><path d="M4 12c3-4 13-4 16 0M4 12c3 4 13 4 16 0M12 4c4 3 4 13 0 16M12 4c-4 3-4 13 0 16"></path></svg>',
+            vienna: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21h16M6 21V9l3-2 3 2v12M15 21V9l3-2 3 2v12"></path></svg>',
+            economics: '<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-4M12 16V8M17 16v-6"></path></svg>'
+        };
+
+        const CATEGORY_LABELS = {
+            architecture: 'Architecture',
+            history: 'History',
+            culture: 'Culture',
+            materials: 'Materials',
+            science: 'Science',
+            vienna: 'Vienna',
+            economics: 'Economics'
         };
 
         // ===== STATE =====
         let db = null;
         let lessons = [];
+        let notebooks = [];
+        let assetNotebookMap = {};
         let entities = [];
         let timelineAnchors = [];
         let quizzes = [];
         let currentView = 'lessons';
+        let currentArticleEntityIndex = {};
+        let currentArticleTitle = '';
         let currentQuiz = null;
         let currentQuestion = 0;
         let quizAnswers = [];
         let progress = {};
+        let thumbnailOverrides = {};
+        let localContentLoaded = false;
+        let localContentLoading = false;
+        let sidebarCollapsed = false;
+        let quizGroupMode = 'notebook';
 
         // Load local generated content as fallback
         const LOCAL_CONTENT = {};
+
+        const THEME_KEY = 'study-hub-theme';
+
+        function applyTheme(theme) {
+            const isDark = theme === 'dark';
+            document.body.classList.toggle('dark', isDark);
+            const label = document.getElementById('theme-label');
+            if (label) label.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        }
+
+        function initTheme() {
+            const stored = localStorage.getItem(THEME_KEY);
+            if (stored) {
+                applyTheme(stored);
+                return;
+            }
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(prefersDark ? 'dark' : 'light');
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.contains('dark');
+            const next = isDark ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, next);
+            applyTheme(next);
+        }
 
         // ===== INITIALIZATION =====
         async function init() {
@@ -1486,6 +2302,7 @@
             }
 
             db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            initTheme();
             loadProgress();
             await loadAllData();
             setupEventListeners();
@@ -1494,12 +2311,52 @@
         }
 
         async function loadAllData() {
-            await Promise.all([
-                loadLessons(),
-                loadTimeline(),
-                loadEntities(),
-                loadQuizzes()
-            ]);
+            await loadAssetNotebookMap();
+            await loadNotebooks();
+            await loadLessons();
+            await loadTimeline();
+            await loadEntities();
+            await loadQuizzes();
+            await loadThumbnailOverrides();
+        }
+
+        function normalizeTitle(title) {
+            return (title || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+        }
+
+        async function loadAssetNotebookMap() {
+            try {
+                const { data, error } = await db
+                    .from('notebooklm_assets')
+                    .select('asset_title, notebook_id');
+
+                if (error) throw error;
+
+                assetNotebookMap = {};
+                data?.forEach(a => {
+                    if (a.asset_title && a.notebook_id) {
+                        assetNotebookMap[normalizeTitle(a.asset_title)] = a.notebook_id;
+                    }
+                });
+            } catch (err) {
+                console.error('Asset map load error:', err);
+            }
+        }
+
+        async function loadNotebooks() {
+            try {
+                const { data, error } = await db
+                    .from('notebooklm_notebooks')
+                    .select('notebook_id, title, description, topic_tags, source_count')
+                    .order('created_display', { ascending: false });
+
+                if (error) throw error;
+
+                notebooks = data || [];
+            } catch (err) {
+                console.error('Notebook load error:', err);
+                notebooks = [];
+            }
         }
 
         async function loadLessons() {
@@ -1507,7 +2364,7 @@
                 // First try to load from Supabase
                 const { data: summaryData, error } = await db
                     .from('notebooklm_summaries')
-                    .select('*, notebooklm_assets(id, asset_title)');
+                    .select('*, notebooklm_assets(id, asset_title, notebook_id)');
 
                 if (error) throw error;
 
@@ -1519,7 +2376,8 @@
                         lessonMap[assetId] = {
                             asset_id: assetId,
                             title: s.notebooklm_assets?.asset_title || 'Unknown',
-                            slug: s.notebooklm_assets?.asset_title?.replace(/ /g, '_') || assetId
+                            slug: s.notebooklm_assets?.asset_title?.replace(/ /g, '_') || assetId,
+                            notebook_id: s.notebooklm_assets?.notebook_id || null
                         };
                     }
                     if (s.summary_type === 'rich') {
@@ -1534,10 +2392,11 @@
                 lessons = Object.values(lessonMap).map(l => {
                     const source = l.rich || l.standard;
                     return {
-                        id: source?.id,
+                        id: source?.id || l.asset_id,
                         asset_id: l.asset_id,
                         title: l.title,
                         slug: l.slug,
+                        notebook_id: l.notebook_id || null,
                         article: source?.summary_text || '',
                         key_points: source?.key_points || [],
                         tldr: l.rich?.metadata?.tldr || l.tldr,
@@ -1547,12 +2406,12 @@
                 }).filter(l => l.id);
 
                 // Try to load rich content from generated JSON files
-                await loadLocalContent();
+                queueLocalContentLoad();
 
             } catch (err) {
                 console.error('Error loading lessons:', err);
                 // Fallback to local content only
-                await loadLocalContent();
+                queueLocalContentLoad();
             }
         }
 
@@ -1614,36 +2473,50 @@
                 'Viennas_Sound_From_Mozart_to_the_Death_of_Tonality'
             ];
 
-            for (const file of files) {
-                try {
-                    const resp = await fetch(`generated/${file}.json`);
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        LOCAL_CONTENT[file] = data;
+            const fetches = files.map(file =>
+                fetch(`generated/${file}.json`)
+                    .then(resp => (resp.ok ? resp.json() : null))
+                    .then(data => ({ file, data }))
+                    .catch(() => null)
+            );
 
-                        // Merge with existing lessons or add new
-                        const existingIndex = lessons.findIndex(l => l.slug === file);
-                        if (existingIndex >= 0) {
-                            lessons[existingIndex] = {
-                                ...lessons[existingIndex],
-                                ...data,
-                                is_rich: true,
-                                local_content: true
-                            };
-                        } else {
-                            lessons.push({
-                                id: data.id,
-                                asset_id: data.id,
-                                ...data,
-                                is_rich: true,
-                                local_content: true
-                            });
-                        }
-                    }
-                } catch (e) {
-                    console.log(`Local content not found: ${file}`);
+            const results = await Promise.allSettled(fetches);
+            results.forEach(result => {
+                const payload = result.value;
+                if (!payload || !payload.data) return;
+                const { file, data } = payload;
+                const safeSlug = data.slug || file;
+                const safeId = data.id || safeSlug;
+                const notebookId =
+                    assetNotebookMap[normalizeTitle(data.title)] ||
+                    assetNotebookMap[normalizeTitle(safeSlug.replace(/_/g, ' '))] ||
+                    null;
+                LOCAL_CONTENT[file] = data;
+
+                // Merge with existing lessons or add new
+                const existingIndex = lessons.findIndex(l => l.slug === safeSlug || l.slug === file);
+                if (existingIndex >= 0) {
+                    lessons[existingIndex] = {
+                        ...lessons[existingIndex],
+                        ...data,
+                        id: safeId,
+                        slug: safeSlug,
+                        notebook_id: lessons[existingIndex].notebook_id || notebookId,
+                        is_rich: true,
+                        local_content: true
+                    };
+                } else {
+                    lessons.push({
+                        id: safeId,
+                        asset_id: safeId,
+                        slug: safeSlug,
+                        notebook_id: notebookId,
+                        ...data,
+                        is_rich: true,
+                        local_content: true
+                    });
                 }
-            }
+            });
         }
 
         async function loadTimeline() {
@@ -1672,25 +2545,96 @@
             }
         }
 
-        async function loadEntities() {
-            // Extract entities from local content
-            for (const [slug, content] of Object.entries(LOCAL_CONTENT)) {
-                if (content.entities) {
-                    content.entities.forEach(e => {
-                        if (!entities.find(ex => ex.id === e.id)) {
-                            entities.push({
-                                ...e,
-                                lessons: [slug]
-                            });
-                        } else {
-                            const existing = entities.find(ex => ex.id === e.id);
-                            if (!existing.lessons.includes(slug)) {
-                                existing.lessons.push(slug);
-                            }
+        async function loadThumbnailOverrides() {
+            try {
+                const resp = await fetch('assets/lesson-thumbs/overrides.json');
+                if (resp.ok) {
+                    thumbnailOverrides = await resp.json();
+                    Object.entries(thumbnailOverrides).forEach(([key, value]) => {
+                        const normalized = normalizeTitle(key.replace(/_/g, ' '));
+                        if (normalized && !thumbnailOverrides[normalized]) {
+                            thumbnailOverrides[normalized] = value;
                         }
                     });
                 }
+            } catch (err) {
+                thumbnailOverrides = {};
             }
+        }
+
+        function queueLocalContentLoad() {
+            if (localContentLoaded || localContentLoading) return;
+            localContentLoading = true;
+
+            const run = () => {
+                loadLocalContent()
+                    .then(() => {
+                        localContentLoaded = true;
+                        localContentLoading = false;
+                        return refreshAfterLocalContent();
+                    })
+                    .catch(() => {
+                        localContentLoading = false;
+                    });
+            };
+
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(run, { timeout: 2000 });
+            } else {
+                setTimeout(run, 200);
+            }
+        }
+
+        async function refreshAfterLocalContent() {
+            await loadEntities();
+            updateStats();
+            if (currentView === 'lessons') {
+                renderLessons(lessons);
+            } else if (currentView === 'notebooks') {
+                renderNotebooks();
+            } else if (currentView === 'entities') {
+                renderEntities('all');
+            }
+        }
+
+        async function loadEntities() {
+            entities = [];
+            const entityMap = {};
+
+            function slugifyEntity(name) {
+                return (name || '')
+                    .toLowerCase()
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-|-$/g, '');
+            }
+
+            function upsertEntity(raw, lessonSlug) {
+                if (!raw || !raw.name) return;
+                const id = raw.id || raw.slug || slugifyEntity(raw.name);
+                if (!id) return;
+                if (!entityMap[id]) {
+                    entityMap[id] = {
+                        id,
+                        name: raw.name,
+                        type: raw.type || 'concept',
+                        description: raw.description || '',
+                        dates: raw.dates || raw.anchor_date || '',
+                        wikipedia_url: raw.wikipedia_url || raw.wikipedia || '',
+                        images: raw.images || [],
+                        lessons: lessonSlug ? [lessonSlug] : []
+                    };
+                } else if (lessonSlug && !entityMap[id].lessons.includes(lessonSlug)) {
+                    entityMap[id].lessons.push(lessonSlug);
+                }
+            }
+
+            // Extract entities from local content + lessons
+            lessons.forEach(lesson => {
+                const lessonSlug = lesson.slug || lesson.id;
+                const list = lesson.entities || lesson.notable_entities || lesson.full_data?.entities || lesson.full_data?.notable_entities || [];
+                list.forEach(e => upsertEntity(e, lessonSlug));
+            });
 
             // Also try Supabase
             try {
@@ -1700,14 +2644,14 @@
 
                 if (!error && data) {
                     data.forEach(e => {
-                        if (!entities.find(ex => ex.id === e.id)) {
-                            entities.push(e);
-                        }
+                        upsertEntity(e, null);
                     });
                 }
             } catch (err) {
                 console.log('Entities table not yet created');
             }
+
+            entities = Object.values(entityMap);
         }
 
         async function loadQuizzes() {
@@ -1803,6 +2747,22 @@
                 });
             });
 
+            // Theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // Quiz group controls
+            document.querySelectorAll('.quiz-toggle').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    quizGroupMode = btn.dataset.mode;
+                    document.querySelectorAll('.quiz-toggle').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderQuizzes();
+                });
+            });
+
             // Modal close on outside click
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', (e) => {
@@ -1819,30 +2779,14 @@
 
         // Category filtering
         function filterLessons(category) {
-            const grid = document.getElementById('lessons-grid');
             const filtered = category === 'all' ? lessons : lessons.filter(l => detectCategory(l) === category);
-            // Re-render with filtered list using same card template
-            grid.innerHTML = filtered.map(l => {
-                const era = l.timeline_context?.primary_era || '';
-                const cat = detectCategory(l);
-                const firstImg = l.images?.[0];
-                const isEnhanced = ENHANCED_ARTICLES.has(l.slug);
-                const cardImage = firstImg
-                    ? `<div class="lesson-card-image"><img src="${firstImg.thumbnail_url || firstImg.url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'lesson-card-gradient gradient-${cat}\\'>${CATEGORY_ICONS[cat] || '📚'}</div>'"></div>`
-                    : `<div class="lesson-card-image"><div class="lesson-card-gradient gradient-${cat}">${CATEGORY_ICONS[cat] || '📚'}</div></div>`;
-                return `
-                    <div class="lesson-card" onclick="openLesson('${l.slug || l.id}')">
-                        ${cardImage}
-                        <h3>${l.title}</h3>
-                        <p>${l.tldr || l.article?.substring(0, 150) || 'No summary available'}...</p>
-                        <div class="lesson-meta">
-                            ${isEnhanced ? '<span class="badge enhanced">Enhanced</span>' : ''}
-                            ${l.is_rich ? '<span class="badge rich">Rich Article</span>' : '<span class="badge pending">Basic</span>'}
-                            ${era ? `<span class="badge era">${era}</span>` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            if (category === 'all') {
+                setLessonsHeader(DEFAULT_LESSONS_TITLE, DEFAULT_LESSONS_SUBTITLE);
+            } else {
+                const label = category.charAt(0).toUpperCase() + category.slice(1);
+                setLessonsHeader(`${label} Lessons`, `Focused collection of ${label.toLowerCase()} deep-dives`);
+            }
+            renderLessons(filtered);
         }
 
         // ===== TOC FUNCTIONS =====
@@ -1925,43 +2869,472 @@
         function renderCurrentView() {
             switch (currentView) {
                 case 'lessons': renderLessons(); break;
+                case 'notebooks': renderNotebooks(); break;
                 case 'timeline': renderTimeline('all'); break;
                 case 'entities': renderEntities('all'); break;
                 case 'quizzes': renderQuizzes(); break;
             }
         }
 
+        const DEFAULT_LESSONS_TITLE = 'All Lessons';
+        const DEFAULT_LESSONS_SUBTITLE = 'Encyclopedic deep-dives from NotebookLM audio overviews';
+
+        function setLessonsHeader(title, subtitle) {
+            const titleEl = document.getElementById('lessons-title');
+            const subtitleEl = document.getElementById('lessons-subtitle');
+            if (titleEl) titleEl.textContent = title || DEFAULT_LESSONS_TITLE;
+            if (subtitleEl) subtitleEl.textContent = subtitle || DEFAULT_LESSONS_SUBTITLE;
+        }
+
+        function extractFirstParagraph(article) {
+            if (!article) return '';
+            const blocks = article
+                .split('\n\n')
+                .map(b => b.replace(/[#>*_`]/g, '').trim())
+                .filter(b => b && !b.startsWith('#'));
+            return blocks[0] || '';
+        }
+
+        function buildLessonPreview(lesson) {
+            if (lesson.summary_paragraph) return lesson.summary_paragraph;
+            if (lesson.metadata?.summary_paragraph) return lesson.metadata.summary_paragraph;
+
+            const topics = lesson.metadata?.themes
+                || lesson.metadata?.claude_reference?.topics_covered
+                || lesson.full_data?.claude_reference?.topics_covered
+                || [];
+
+            if (topics.length) {
+                const top = topics.slice(0, 3);
+                if (top.length === 1) return `Explores ${top[0]} and its broader implications.`;
+                if (top.length === 2) return `Explores ${top[0]} and ${top[1]}, focusing on their connection.`;
+                return `Covers ${top[0]}, ${top[1]}, and ${top[2]}, plus related themes and case studies.`;
+            }
+
+            if (lesson.key_takeaways?.length) {
+                return `Covers ${lesson.key_takeaways.slice(0, 2).join(' — ')}.`;
+            }
+
+            if (lesson.tldr) return lesson.tldr;
+
+            const paragraph = extractFirstParagraph(lesson.article);
+            if (!paragraph) return 'No summary available.';
+            return paragraph.length > 220 ? `${paragraph.slice(0, 220).trim()}…` : paragraph;
+        }
+
+        function formatEraBadge(era) {
+            if (!era) return '';
+            const years = era.match(/\b(1[0-9]{3}|20[0-9]{2})\b/g);
+            if (years && years.length) {
+                const unique = [...new Set(years)];
+                if (unique.length >= 2) return `${unique[0]}–${unique[1]}`;
+                return unique[0];
+            }
+            const bce = era.match(/\b(\d{1,4})\s*(BCE|BC)\b/i);
+            if (bce) return `${bce[1]} ${bce[2].toUpperCase()}`;
+            return era.length > 24 ? `${era.slice(0, 24).trim()}…` : era;
+        }
+
+        const wikiThumbCache = new Map();
+
+        function escapeAttr(value) {
+            return (value || '').replace(/"/g, '&quot;');
+        }
+
+        function extractWikiTitle(seed) {
+            if (!seed) return '';
+            if (seed.includes('wikipedia.org/wiki/')) {
+                const raw = seed.split('/wiki/')[1] || '';
+                return decodeURIComponent(raw.split('#')[0].split('?')[0]).replace(/_/g, ' ');
+            }
+            return seed;
+        }
+
+        async function fetchWikiThumbnail(title) {
+            const key = (title || '').toLowerCase();
+            if (!key) return null;
+            if (wikiThumbCache.has(key)) return wikiThumbCache.get(key);
+            try {
+                const resp = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&titles=${encodeURIComponent(title)}&pithumbsize=600&format=json&origin=*`);
+                if (!resp.ok) {
+                    wikiThumbCache.set(key, null);
+                    return null;
+                }
+                const data = await resp.json();
+                const pages = data?.query?.pages || {};
+                const page = Object.values(pages)[0] || {};
+                const src = page?.thumbnail?.source || null;
+                wikiThumbCache.set(key, src);
+                return src;
+            } catch (err) {
+                wikiThumbCache.set(key, null);
+                return null;
+            }
+        }
+
+        async function tryLoadWikiImage(img, seed) {
+            if (!seed || img.dataset.triedWiki) return false;
+            img.dataset.triedWiki = '1';
+            const title = extractWikiTitle(seed);
+            if (!title) return false;
+            const src = await fetchWikiThumbnail(title);
+            if (src) {
+                img.src = src;
+                return true;
+            }
+            return false;
+        }
+
+        function getLessonWikiSeed(lesson) {
+            const entity = (lesson.entities || []).find(e => e.wikipedia_url) || (lesson.entities || [])[0];
+            return entity?.wikipedia_url || lesson.wikipedia_url || lesson.title || '';
+        }
+
+        function getArticleImageWikiSeed(img) {
+            if (img.dataset.wiki) return img.dataset.wiki;
+            const entityId = img.dataset.entityId;
+            if (entityId && currentArticleEntityIndex[entityId]?.wikipedia_url) {
+                return currentArticleEntityIndex[entityId].wikipedia_url;
+            }
+            return currentArticleTitle || '';
+        }
+
+        async function handleCardImageError(img) {
+            const fallbackList = img.dataset.fallbacks ? JSON.parse(img.dataset.fallbacks) : [];
+            const currentIndex = parseInt(img.dataset.fallbackIndex || '0', 10);
+            if (fallbackList.length && currentIndex < fallbackList.length - 1) {
+                const nextIndex = currentIndex + 1;
+                img.dataset.fallbackIndex = String(nextIndex);
+                img.src = fallbackList[nextIndex];
+                return;
+            }
+            if (img.dataset.full && !img.dataset.triedProxy) {
+                img.dataset.triedProxy = '1';
+                img.src = proxyImageUrl(img.dataset.full);
+                return;
+            }
+            const wikiSeed = img.dataset.wiki;
+            if (wikiSeed) {
+                const loaded = await tryLoadWikiImage(img, wikiSeed);
+                if (loaded) return;
+            }
+            const category = img.dataset.category || 'history';
+            const icon = CATEGORY_ICONS[category] || CATEGORY_ICONS.history;
+            img.parentElement.innerHTML = `<div class="lesson-card-gradient gradient-${category}">${icon}</div>`;
+        }
+
+        function handleArticleImageLoad(img) {
+            const figure = img.closest('.article-image, .inline-gallery-item');
+            if (!figure) return;
+            if (img.naturalHeight > img.naturalWidth * 1.15) {
+                figure.classList.add('portrait');
+            }
+        }
+
+        async function handleArticleImageError(img) {
+            if (img.dataset.full && !img.dataset.triedFull) {
+                img.dataset.triedFull = '1';
+                img.src = img.dataset.full;
+                return;
+            }
+            if (img.dataset.full && !img.dataset.triedProxy) {
+                img.dataset.triedProxy = '1';
+                img.src = proxyImageUrl(img.dataset.full);
+                return;
+            }
+            const wikiSeed = getArticleImageWikiSeed(img);
+            if (wikiSeed) {
+                const loaded = await tryLoadWikiImage(img, wikiSeed);
+                if (loaded) return;
+            }
+            const caption = img.dataset.caption || '';
+            img.outerHTML = `<div class="image-placeholder"><div class="placeholder-icon">🖼️</div>${caption}</div>`;
+        }
+
+        async function handleEntityImageError(img) {
+            if (img.dataset.full && !img.dataset.triedFull) {
+                img.dataset.triedFull = '1';
+                img.src = img.dataset.full;
+                return;
+            }
+            if (img.dataset.full && !img.dataset.triedProxy) {
+                img.dataset.triedProxy = '1';
+                img.src = proxyImageUrl(img.dataset.full);
+                return;
+            }
+            const wikiSeed = img.dataset.wiki;
+            if (wikiSeed) {
+                const loaded = await tryLoadWikiImage(img, wikiSeed);
+                if (loaded) return;
+            }
+            const type = img.dataset.type || 'concept';
+            const icon = type === 'person' ? '👤' : type === 'building' ? '🏛️' : type === 'artwork' ? '🎨' : '📚';
+            img.outerHTML = `<div class="entity-gallery-image" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">${icon}</div>`;
+        }
+
+        function proxyImageUrl(url) {
+            if (!url) return '';
+            return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=800`;
+        }
+
+        function buildLessonCardImage(lesson, category) {
+            const images = lesson.images || [];
+            const wikiSeed = getLessonWikiSeed(lesson);
+            const override =
+                thumbnailOverrides[lesson.slug] ||
+                thumbnailOverrides[lesson.title] ||
+                thumbnailOverrides[normalizeTitle(lesson.slug)] ||
+                thumbnailOverrides[normalizeTitle(lesson.title)];
+            if (!images.length) {
+                if (override?.path) {
+                    return `<div class="lesson-card-image" data-wiki="${escapeAttr(wikiSeed)}" data-category="${category}"><img src="${override.path}" data-full="${override.path}" data-category="${category}" data-wiki="${escapeAttr(wikiSeed)}" alt="" loading="lazy" onerror="handleCardImageError(this)"></div>`;
+                }
+                return `<div class="lesson-card-image" data-wiki="${escapeAttr(wikiSeed)}" data-category="${category}"><div class="lesson-card-gradient gradient-${category}">${CATEGORY_ICONS[category] || '📚'}</div></div>`;
+            }
+            const fallbacks = [];
+            if (override?.path) fallbacks.push(override.path);
+            images.forEach(img => {
+                if (img.thumbnail_url) fallbacks.push(img.thumbnail_url);
+                if (img.url && img.url !== img.thumbnail_url) fallbacks.push(img.url);
+            });
+            const thumb = fallbacks[0] || '';
+            const full = override?.path || images[0]?.url || images[0]?.thumbnail_url || '';
+            if (!thumb) {
+                if (override?.path) {
+                    return `<div class="lesson-card-image" data-wiki="${escapeAttr(wikiSeed)}" data-category="${category}"><img src="${override.path}" data-full="${override.path}" data-category="${category}" data-wiki="${escapeAttr(wikiSeed)}" alt="" loading="lazy" onerror="handleCardImageError(this)"></div>`;
+                }
+                return `<div class="lesson-card-image" data-wiki="${escapeAttr(wikiSeed)}" data-category="${category}"><div class="lesson-card-gradient gradient-${category}">${CATEGORY_ICONS[category] || '📚'}</div></div>`;
+            }
+            return `<div class="lesson-card-image" data-wiki="${escapeAttr(wikiSeed)}" data-category="${category}"><img src="${thumb}" data-full="${full}" data-category="${category}" data-wiki="${escapeAttr(wikiSeed)}" data-fallbacks='${JSON.stringify(fallbacks)}' data-fallback-index="0" alt="" loading="lazy" onerror="handleCardImageError(this)"></div>`;
+        }
+
+        function renderTopicChips(lesson) {
+            const topics = lesson.metadata?.themes
+                || lesson.metadata?.claude_reference?.topics_covered
+                || lesson.full_data?.claude_reference?.topics_covered
+                || [];
+            if (!topics.length) return '';
+            return `
+                <div class="topic-chips">
+                    ${topics.slice(0, 8).map(t => `<span class="topic-chip">${t}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        function renderInsightCards(lesson) {
+            const takeaways = lesson.key_takeaways || lesson.key_points || [];
+            if (!takeaways.length) return '';
+            return `
+                <div class="insight-grid">
+                    ${takeaways.slice(0, 4).map(t => `<div class="insight-card">${t}</div>`).join('')}
+                </div>
+            `;
+        }
+
+        function renderImageGallery(images) {
+            if (!images || !images.length) return '';
+            const galleryImages = images.filter(img => !img.position || img.position === 'gallery');
+            if (!galleryImages.length) return '';
+            const items = galleryImages.map(img => {
+                const thumb = img.thumbnail_url || img.url;
+                const full = img.url || img.thumbnail_url || '';
+                const caption = (img.caption || '').replace(/\"/g, '&quot;');
+                if (!thumb) return '';
+                return `
+                    <div class="image-gallery-item">
+                        <img src="${thumb}" data-full="${full}" data-caption="${caption}" data-entity-id="${escapeAttr(img.entity_id || '')}" alt="${caption}" loading="lazy" decoding="async" onload="handleArticleImageLoad(this)" onerror="handleArticleImageError(this)">
+                        <div class="image-gallery-caption">${img.caption || ''}</div>
+                    </div>
+                `;
+            }).join('');
+            if (!items.trim()) return '';
+            return `<div class="image-gallery">${items}</div>`;
+        }
+
+        function renderAnchorStrip(anchors) {
+            if (!anchors || !anchors.length) return '';
+            const cards = anchors.slice(0, 6).map(anchor => `
+                <div class="anchor-card">
+                    <div class="anchor-date">${anchor.date_display || ''}</div>
+                    <div class="anchor-title">${anchor.title}</div>
+                </div>
+            `).join('');
+            return `<div class="anchor-strip">${cards}</div>`;
+        }
+
+        function renderExternalLinks(entities, lesson) {
+            const links = [];
+            if (lesson?.wikipedia_url) {
+                links.push({ name: lesson.title || 'Lesson Source', url: lesson.wikipedia_url });
+            }
+            (entities || []).forEach(entity => {
+                if (entity.wikipedia_url && !links.find(l => l.url === entity.wikipedia_url)) {
+                    links.push({ name: entity.name, url: entity.wikipedia_url });
+                }
+            });
+            if (!links.length) return '';
+            const items = links.slice(0, 6).map(link => `
+                <li><a href="${link.url}" target="_blank" rel="noopener">${link.name} →</a></li>
+            `).join('');
+            return `
+                <div class="external-links">
+                    <h3>External Links</h3>
+                    <ul>${items}</ul>
+                </div>
+            `;
+        }
+
+        function hydrateLessonCardImages() {
+            document.querySelectorAll('.lesson-card-image[data-wiki]').forEach(container => {
+                if (container.querySelector('img')) return;
+                const seed = container.dataset.wiki;
+                if (!seed) return;
+                const img = document.createElement('img');
+                img.alt = '';
+                img.loading = 'lazy';
+                img.dataset.wiki = seed;
+                img.dataset.category = container.dataset.category || 'history';
+                img.onerror = () => handleCardImageError(img);
+                img.onload = () => {
+                    const gradient = container.querySelector('.lesson-card-gradient');
+                    if (gradient) gradient.remove();
+                };
+                container.appendChild(img);
+                tryLoadWikiImage(img, seed).then(found => {
+                    if (!found) img.remove();
+                });
+            });
+        }
+
         // ===== RENDER FUNCTIONS =====
-        function renderLessons() {
+        function renderLessons(list = lessons) {
             const grid = document.getElementById('lessons-grid');
-            if (!lessons.length) {
+            if (!list.length) {
                 grid.innerHTML = '<div class="loading">No lessons found</div>';
                 return;
             }
 
-            grid.innerHTML = lessons.map(l => {
+            if (list === lessons) {
+                setLessonsHeader(DEFAULT_LESSONS_TITLE, DEFAULT_LESSONS_SUBTITLE);
+            }
+
+            grid.innerHTML = list.map((l, index) => {
                 const era = l.timeline_context?.primary_era || '';
+                const eraBadge = formatEraBadge(era);
                 const category = detectCategory(l);
-                const firstImg = l.images?.[0];
-                const isEnhanced = ENHANCED_ARTICLES.has(l.slug);
-                const cardImage = firstImg
-                    ? `<div class="lesson-card-image"><img src="${firstImg.thumbnail_url || firstImg.url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'lesson-card-gradient gradient-${category}\\'>${CATEGORY_ICONS[category] || '📚'}</div>'"></div>`
-                    : `<div class="lesson-card-image"><div class="lesson-card-gradient gradient-${category}">${CATEGORY_ICONS[category] || '📚'}</div></div>`;
+                const cardImage = buildLessonCardImage(l, category);
 
                 return `
-                    <div class="lesson-card" onclick="openLesson('${l.slug || l.id}')">
+                    <div class="lesson-card" style="--stagger:${index}" onclick="openLesson('${l.slug || l.id}')">
                         ${cardImage}
                         <h3>${l.title}</h3>
-                        <p>${l.tldr || l.article?.substring(0, 150) || 'No summary available'}...</p>
+                        <p>${buildLessonPreview(l)}</p>
                         <div class="lesson-meta">
-                            ${isEnhanced ? '<span class="badge enhanced">Enhanced</span>' : ''}
-                            ${l.is_rich ? '<span class="badge rich">Rich Article</span>' : '<span class="badge pending">Basic</span>'}
-                            ${era ? `<span class="badge era">${era}</span>` : ''}
-                            ${l.key_takeaways?.length ? `<span class="badge">${l.key_takeaways.length} takeaways</span>` : ''}
+                            ${eraBadge ? `<span class="badge era">${eraBadge}</span>` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
+
+            hydrateLessonCardImages();
+        }
+
+        function buildNotebookGroups() {
+            const groups = {};
+            lessons.forEach(lesson => {
+                const key = lesson.notebook_id || 'local';
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(lesson);
+            });
+
+            const ordered = [];
+            notebooks.forEach(nb => {
+                ordered.push({
+                    ...nb,
+                    lessons: groups[nb.notebook_id] || []
+                });
+                delete groups[nb.notebook_id];
+            });
+
+            if (groups.local) {
+                ordered.unshift({
+                    notebook_id: 'local',
+                    title: 'Local Collection',
+                    description: 'Generated lessons not yet mapped to a NotebookLM source.',
+                    topic_tags: ['Local'],
+                    lessons: groups.local
+                });
+                delete groups.local;
+            }
+
+            Object.entries(groups).forEach(([id, list]) => {
+                ordered.push({
+                    notebook_id: id,
+                    title: `Notebook ${id.slice(0, 6)}`,
+                    description: 'NotebookLM source without metadata.',
+                    topic_tags: [],
+                    lessons: list
+                });
+            });
+
+            return ordered.filter(nb => nb.lessons.length > 0);
+        }
+
+        function renderNotebooks() {
+            const grid = document.getElementById('notebooks-grid');
+            const grouped = buildNotebookGroups();
+            if (!grouped.length) {
+                grid.innerHTML = '<div class="loading">No notebooks found</div>';
+                return;
+            }
+
+            grid.innerHTML = grouped.map((nb, index) => {
+                const tags = (nb.topic_tags || []).slice(0, 4)
+                    .map(t => `<span class="notebook-tag">${t}</span>`).join('');
+                const lessonChips = nb.lessons.slice(0, 8)
+                    .map(l => `<span class="notebook-lesson-chip" onclick="event.stopPropagation(); openLesson('${l.slug || l.id}')">${l.title}</span>`)
+                    .join('');
+                const lessonCount = nb.lessons.length;
+                const description = nb.description || `Contains ${lessonCount} lesson${lessonCount === 1 ? '' : 's'} across this notebook.`;
+
+                return `
+                    <div class="notebook-card" style="--stagger:${index}" onclick="openNotebook('${nb.notebook_id}')">
+                        <div class="notebook-title">
+                            <button class="notebook-title-link" onclick="event.stopPropagation(); openNotebook('${nb.notebook_id}')">${nb.title}</button>
+                        </div>
+                        <div class="notebook-description">${description}</div>
+                        <div class="notebook-meta">
+                            <span class="badge">${lessonCount} lessons</span>
+                            ${nb.source_count ? `<span class="badge">${nb.source_count} sources</span>` : ''}
+                        </div>
+                        ${tags ? `<div class="notebook-meta">${tags}</div>` : ''}
+                        ${lessonChips ? `
+                            <div class="notebook-lessons">
+                                <details onclick="event.stopPropagation()">
+                                    <summary><span>Lessons</span><span class="badge">${lessonCount}</span></summary>
+                                    <div class="lesson-chip-list">${lessonChips}</div>
+                                </details>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openNotebook(notebookId) {
+            const notebook = notebooks.find(n => n.notebook_id === notebookId);
+            const filtered = lessons.filter(l => l.notebook_id === notebookId);
+            if (!filtered.length) return;
+            showView('lessons');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            const lessonsNav = document.querySelector('.nav-item[data-view="lessons"]');
+            if (lessonsNav) lessonsNav.classList.add('active');
+            if (notebookId === 'local') {
+                setLessonsHeader('Local Collection', 'Generated lessons not yet mapped to a NotebookLM source.');
+            } else {
+                setLessonsHeader(notebook?.title || 'Notebook Lessons', notebook?.description || 'Lessons grouped by notebook.');
+            }
+            renderLessons(filtered);
         }
 
         function openLesson(slugOrId) {
@@ -1970,6 +3343,18 @@
 
             showView('article');
             renderArticle(lesson);
+        }
+
+        function toggleSidebar() {
+            sidebarCollapsed = !sidebarCollapsed;
+            const container = document.querySelector('.article-with-sidebar');
+            if (!container) return;
+            container.classList.toggle('sidebar-collapsed', sidebarCollapsed);
+        }
+
+        function applySidebarState(container) {
+            if (!container) return;
+            container.classList.toggle('sidebar-collapsed', sidebarCollapsed);
         }
 
         function renderArticle(lesson) {
@@ -1982,6 +3367,12 @@
             // Get relevant timeline anchors
             const relatedAnchors = timelineAnchors.filter(a => anchors.includes(a.number || a.anchor_number));
 
+            currentArticleTitle = lesson.title || '';
+            currentArticleEntityIndex = {};
+            entities.forEach(e => {
+                if (e?.id) currentArticleEntityIndex[e.id] = e;
+            });
+
             content.innerHTML = `
                 <article class="article-header">
                     <h1 class="article-title">${lesson.title}</h1>
@@ -1990,20 +3381,28 @@
                         ${lesson.metadata?.word_count ? `<span class="article-meta-item">📝 ${lesson.metadata.word_count} words</span>` : ''}
                         ${lesson.timeline_context?.primary_era ? `<span class="article-meta-item">📅 ${lesson.timeline_context.primary_era}</span>` : ''}
                     </div>
+                    <button class="sidebar-toggle" type="button" onclick="toggleSidebar()">Sidebar</button>
                 </article>
 
                 <div class="article-with-sidebar">
                     <div class="article-main">
                         ${lesson.tldr ? `
                             <div class="tldr-box">
-                                <div class="tldr-label">TL;DR</div>
+                                <div class="tldr-label">Summary</div>
                                 <div class="tldr-text">${lesson.tldr}</div>
                             </div>
                         ` : ''}
 
+                        ${renderAnchorStrip(relatedAnchors)}
+                        ${renderTopicChips(lesson)}
+                        ${renderInsightCards(lesson)}
+                        ${renderImageGallery(images)}
+
                         <div class="article-body">
                             ${markdownToHtml(lesson.article, images)}
                         </div>
+
+                        ${renderExternalLinks(entities, lesson)}
 
                         ${lesson.key_takeaways?.length ? `
                             <div class="sidebar-section" style="margin-top: 40px;">
@@ -2015,6 +3414,7 @@
                         ` : ''}
                     </div>
 
+                    <div class="sidebar-peek" title="Hover to peek panels"></div>
                     <aside class="article-sidebar">
                         ${relatedAnchors.length ? `
                             <div class="sidebar-section">
@@ -2063,6 +3463,7 @@
 
             // Scroll to top and build TOC
             window.scrollTo(0, 0);
+            applySidebarState(document.querySelector('.article-with-sidebar'));
             setTimeout(buildToc, 100);
         }
 
@@ -2135,7 +3536,7 @@
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/\n\n/g, '</p><p>')
-                .replace(/^- (.*$)/gim, '<li>$1</li>');
+                .replace(/^\s*[-•–·]\s+(.*$)/gim, '<li>$1</li>');
 
             // Smart callout detection
             html = html.replace(/<p>(Key Point|Important|Note|Warning):\s*(.*?)<\/p>/gi, (m, label, content) => {
@@ -2148,7 +3549,7 @@
             // Wrap in paragraphs
             html = '<p>' + html + '</p>';
             html = html.replace(/<p><h/g, '<h').replace(/<\/h([123])><\/p>/g, '</h$1>');
-            html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
+            html = html.replace(/<p>\s*<li>/g, '<ul><li>').replace(/<\/li>\s*<\/p>/g, '</li></ul>');
             // Don't wrap tables, blockquotes, or callouts in paragraphs
             html = html.replace(/<p>(<table)/g, '$1').replace(/<\/table><\/p>/g, '</table>');
             html = html.replace(/<p>(<blockquote)/g, '$1').replace(/<\/blockquote><\/p>/g, '</blockquote>');
@@ -2172,41 +3573,61 @@
             // Insert images after sections
             const imgTemplate = (img) => `
                 <figure class="article-image">
-                    <img src="${img.thumbnail_url || img.url}" alt="${(img.caption || '').replace(/"/g, '&quot;')}" loading="lazy"
-                         onerror="this.outerHTML='<div class=\\'image-placeholder\\'><div class=\\'placeholder-icon\\'>🖼️</div>${(img.caption || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')}</div>'">
+                    <img src="${img.thumbnail_url || img.url}" data-full="${img.url || img.thumbnail_url || ''}" data-caption="${(img.caption || '').replace(/"/g, '&quot;')}" data-entity-id="${escapeAttr(img.entity_id || '')}"
+                         alt="${(img.caption || '').replace(/"/g, '&quot;')}" loading="lazy"
+                         decoding="async" onload="handleArticleImageLoad(this)" onerror="handleArticleImageError(this)">
                     <figcaption>${img.caption || ''} <small style="color:var(--text-dim)">${img.attribution || ''}</small></figcaption>
                 </figure>`;
 
-            images.forEach((img, idx) => {
+            const inlineGalleryTemplate = (group) => `
+                <div class="inline-gallery">
+                    ${group.map(img => `
+                        <div class="inline-gallery-item">
+                            <img src="${img.thumbnail_url || img.url}" data-full="${img.url || img.thumbnail_url || ''}" data-caption="${(img.caption || '').replace(/"/g, '&quot;')}" data-entity-id="${escapeAttr(img.entity_id || '')}"
+                                 alt="${(img.caption || '').replace(/"/g, '&quot;')}" loading="lazy" decoding="async"
+                                 onload="handleArticleImageLoad(this)" onerror="handleArticleImageError(this)">
+                            <div class="inline-gallery-caption">${img.caption || ''}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            const inlineGroups = {};
+            images.forEach(img => {
                 if (img.position && img.position.startsWith('inline-after:section-')) {
                     const posKey = img.position.replace('inline-after:section-', '');
-                    const sectionNum = parseInt(posKey);
-                    const figHtml = imgTemplate(img);
+                    inlineGroups[posKey] = inlineGroups[posKey] || [];
+                    inlineGroups[posKey].push(img);
+                }
+            });
 
-                    if (!isNaN(sectionNum)) {
-                        // Numbered position: insert after Nth h2
-                        let h2Count = 0;
-                        html = html.replace(/<\/h2>/g, (match) => {
-                            h2Count++;
-                            if (h2Count === sectionNum) {
-                                return match + figHtml;
-                            }
-                            return match;
-                        });
-                    } else {
-                        // Named position: match against h2 text slugified
-                        const target = posKey.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                        let inserted = false;
-                        html = html.replace(/<h2>([^<]+)<\/h2>/g, (match, title) => {
-                            if (inserted) return match;
-                            const slug = slugify(title);
-                            if (slug.includes(target) || target.includes(slug.substring(0, Math.min(slug.length, 15)))) {
-                                inserted = true;
-                                return match + figHtml;
-                            }
-                            return match;
-                        });
-                    }
+            Object.entries(inlineGroups).forEach(([posKey, group]) => {
+                const sectionNum = parseInt(posKey, 10);
+                const figHtml = group.length > 1 ? inlineGalleryTemplate(group) : imgTemplate(group[0]);
+
+                if (!isNaN(sectionNum)) {
+                    // Numbered position: insert after Nth h2
+                    let h2Count = 0;
+                    html = html.replace(/<\/h2>/g, (match) => {
+                        h2Count++;
+                        if (h2Count === sectionNum) {
+                            return match + figHtml;
+                        }
+                        return match;
+                    });
+                } else {
+                    // Named position: match against h2 text slugified
+                    const target = posKey.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                    let inserted = false;
+                    html = html.replace(/<h2>([^<]+)<\/h2>/g, (match, title) => {
+                        if (inserted) return match;
+                        const slug = slugify(title);
+                        if (slug.includes(target) || target.includes(slug.substring(0, Math.min(slug.length, 15)))) {
+                            inserted = true;
+                            return match + figHtml;
+                        }
+                        return match;
+                    });
                 }
             });
 
@@ -2233,7 +3654,7 @@
                 filtered = timelineAnchors.filter(scaleRanges[scale]);
             }
 
-            container.innerHTML = '<div class="timeline-line"></div>' + filtered.map(anchor => {
+            container.innerHTML = '<div class="timeline-line"></div>' + filtered.map((anchor, index) => {
                 const num = anchor.number || anchor.anchor_number;
                 const mechanism = anchor.mechanism || 'energy';
 
@@ -2243,7 +3664,7 @@
                 );
 
                 return `
-                    <div class="timeline-anchor">
+                    <div class="timeline-anchor" style="--stagger:${index}">
                         <div class="timeline-anchor-marker ${mechanism}"></div>
                         <div class="timeline-anchor-content">
                             <div class="timeline-anchor-header">
@@ -2277,11 +3698,13 @@
                 filtered = entities.filter(e => e.type === type);
             }
 
-            grid.innerHTML = filtered.map(e => {
+            grid.innerHTML = filtered.map((e, index) => {
                 const img = e.images?.[0] || LOCAL_CONTENT[e.lessons?.[0]]?.images?.find(i => i.entity_id === e.id);
+                const thumb = img?.thumbnail_url || img?.url || '';
+                const full = img?.url || img?.thumbnail_url || '';
                 return `
-                    <div class="entity-gallery-card" onclick="openEntity('${e.id}')">
-                        ${img ? `<img class="entity-gallery-image" src="${img.thumbnail_url || img.url}" alt="${e.name}">` :
+                    <div class="entity-gallery-card" style="--stagger:${index}" onclick="openEntity('${e.id}')">
+                        ${thumb ? `<img class="entity-gallery-image" src="${thumb}" data-full="${full}" data-type="${e.type}" data-wiki="${escapeAttr(e.wikipedia_url || '')}" alt="${e.name}" onerror="handleEntityImageError(this)">` :
                             `<div class="entity-gallery-image" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">
                                 ${e.type === 'person' ? '👤' : e.type === 'building' ? '🏛️' : e.type === 'artwork' ? '🎨' : '📚'}
                             </div>`}
@@ -2301,9 +3724,10 @@
             if (!entity) return;
 
             const img = entity.images?.[0] || Object.values(LOCAL_CONTENT).flatMap(c => c.images || []).find(i => i.entity_id === id);
+            const entityImg = img?.url || img?.thumbnail_url || '';
 
             document.getElementById('entity-modal-content').innerHTML = `
-                ${img ? `<img src="${img.url}" alt="${entity.name}" style="width:100%;border-radius:8px;margin-bottom:16px;">` : ''}
+                ${entityImg ? `<img src="${entityImg}" alt="${entity.name}" style="width:100%;border-radius:8px;margin-bottom:16px;">` : ''}
                 <h2 style="margin-bottom:8px;">${entity.name}</h2>
                 <div style="color:var(--text-secondary);margin-bottom:16px;">
                     <span class="badge">${entity.type}</span>
@@ -2316,6 +3740,12 @@
             openModal('entity-modal');
         }
 
+        function getQuizCategory(lesson, quiz) {
+            if (lesson) return detectCategory(lesson);
+            const seed = { title: quiz.title || '', slug: quiz.title || '', metadata: {} };
+            return detectCategory(seed);
+        }
+
         function renderQuizzes() {
             const grid = document.getElementById('quizzes-grid');
             if (!quizzes.length) {
@@ -2323,20 +3753,70 @@
                 return;
             }
 
-            grid.innerHTML = quizzes.map(q => {
-                const quizProgress = progress[q.id];
-                const badge = quizProgress?.completed
-                    ? `<span class="badge rich">${quizProgress.score}/${q.question_count}</span>`
-                    : `<span class="badge">${q.question_count} questions</span>`;
+            document.querySelectorAll('.quiz-toggle').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === quizGroupMode);
+            });
+
+            const grouped = {};
+            quizzes.forEach(q => {
+                const lesson = lessons.find(l => l.title === q.title || l.title === q.title.replace(/ Quiz$/, ''));
+                const category = getQuizCategory(lesson, q);
+                let key = '';
+                let label = '';
+                let groupCategory = category;
+
+                if (quizGroupMode === 'topic') {
+                    key = category;
+                    label = CATEGORY_LABELS[category] || 'Topic';
+                } else {
+                    const normalized = normalizeTitle(q.title.replace(/ Quiz$/, ''));
+                    const notebookId = lesson?.notebook_id || assetNotebookMap[normalized] || 'topic';
+                    const notebook = notebooks.find(n => n.notebook_id === notebookId);
+                    label = notebook?.title || (notebookId === 'topic' ? 'By Topic' : `Notebook ${notebookId.slice(0, 6)}`);
+                    key = notebookId;
+                    if (notebook?.title) {
+                        groupCategory = detectCategory({ title: notebook.title, slug: notebook.title, metadata: { themes: notebook.topic_tags || [] } });
+                    }
+                }
+
+                if (!grouped[key]) grouped[key] = { label, items: [], category: groupCategory };
+                grouped[key].items.push({ quiz: q, lesson, category });
+            });
+
+            const entries = Object.values(grouped);
+
+            grid.innerHTML = entries.map((group, groupIndex) => {
+                const cards = group.items.map(({ quiz, lesson, category }, index) => {
+                    const quizProgress = progress[quiz.id];
+                    const badge = quizProgress?.completed
+                        ? `<span class="badge rich">${quizProgress.score}/${quiz.question_count}</span>`
+                        : `<span class="badge">${quiz.question_count} questions</span>`;
+                    const safeLesson = lesson || { title: quiz.title, slug: quiz.title, images: [] };
+                    if (!safeLesson.images) safeLesson.images = [];
+                    const cardImage = buildLessonCardImage(safeLesson, category);
+                    return `
+                        <div class="lesson-card quiz-card" style="--stagger:${index}" onclick="startQuiz('${quiz.id}')">
+                            ${cardImage}
+                            <h3>${quiz.title}</h3>
+                            <div class="lesson-meta">
+                                ${badge}
+                                <span class="badge">${quiz.difficulty || 'intermediate'}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
 
                 return `
-                    <div class="lesson-card" onclick="startQuiz('${q.id}')">
-                        <h3>${q.title}</h3>
-                        <div class="lesson-meta">
-                            ${badge}
-                            <span class="badge">${q.difficulty || 'intermediate'}</span>
+                    <section class="quiz-group">
+                        <div class="quiz-group-header">
+                            <div class="quiz-group-title">
+                                <span class="quiz-group-icon">${CATEGORY_ICONS[group.category] || CATEGORY_ICONS.history}</span>
+                                <span>${group.label}</span>
+                            </div>
+                            <div class="quiz-group-count">${group.items.length} quizzes</div>
                         </div>
-                    </div>
+                        <div class="lesson-grid">${cards}</div>
+                    </section>
                 `;
             }).join('');
         }

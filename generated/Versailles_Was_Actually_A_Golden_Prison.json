@@ -9,7 +9,11 @@
       "start": 1623,
       "end": 1789
     },
-    "anchor_connections": [16, 17, 19],
+    "anchor_connections": [
+      16,
+      17,
+      19
+    ],
     "anchor_context": {
       "16": "The Silk Roads and long-distance trade networks (1200-1450) established the luxury goods economy that would later define Versailles court culture",
       "17": "The Columbian Exchange (1492) brought wealth that funded European absolutism and the silver that backed French royal finances",
@@ -169,8 +173,8 @@
     {
       "id": "img-versailles-aerial",
       "entity_id": "palace-versailles",
-      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_073.jpg",
-      "thumbnail_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_073.jpg/500px-Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_073.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_113.jpg",
+      "thumbnail_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_113.jpg/500px-Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_113.jpg",
       "caption": "Aerial view of the Palace of Versailles, showing the massive scale of Louis XIV's political machine designed to house and control the French nobility.",
       "attribution": "ToucanWings, CC BY-SA 3.0, via Wikimedia Commons",
       "position": "inline-after:section-1"
@@ -327,7 +331,13 @@
     "word_count": 4287,
     "reading_time_minutes": 18,
     "difficulty": "intermediate",
-    "themes": ["political history", "architecture as power", "French Revolution", "court culture", "absolutism"],
+    "themes": [
+      "political history",
+      "architecture as power",
+      "French Revolution",
+      "court culture",
+      "absolutism"
+    ],
     "source_transcript": "transcript_versailles.txt",
     "generated_date": "2026-02-04",
     "status": "complete"

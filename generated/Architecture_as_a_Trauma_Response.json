@@ -17,7 +17,13 @@
     "primary_era": "1851-1975",
     "timeline_start_year": 1851,
     "timeline_end_year": 1975,
-    "anchor_connections": [18, 19, 20, 21, 22],
+    "anchor_connections": [
+      18,
+      19,
+      20,
+      21,
+      22
+    ],
     "anchor_descriptions": {
       "18": "Steam Engine / Industrial Revolution (1712-1769) - The Great Exhibition of 1851 was industrial triumph that radicalized Arts & Crafts thinkers against machine production",
       "19": "Democratic Revolutions (1776-1789) - Arts & Crafts connected to socialist/labor movements seeking dignity for workers",
@@ -266,5 +272,6 @@
       "correct_answer": 1,
       "explanation": "Banham defined New Brutalism with: (1) Legibility of plan—you should read the building's function from outside; (2) Clear exhibition of structure—show the columns, don't hide the bones; (3) Valuation of materials 'as found'—let concrete be rough, show the process of making. The imperfections are part of the truth."
     }
-  ]
+  ],
+  "id": "architecture-as-a-trauma-response"
 }

@@ -17,7 +17,11 @@
     "primary_era": "1966-1997",
     "timeline_start_year": 1966,
     "timeline_end_year": 1997,
-    "anchor_connections": [21, 22, 25],
+    "anchor_connections": [
+      21,
+      22,
+      25
+    ],
     "anchor_descriptions": {
       "21": "World Wars (1914-1945) - Modernism emerged as response to war's chaos; its failure (Pruitt-Igoe) sparked postmodern rebellion",
       "22": "Nuclear Age (1945) - Post-war reconstruction created the modernist housing projects that postmodernism would critique",
@@ -250,5 +254,6 @@
       "correct_answer": 2,
       "explanation": "Venturi taught us to embrace the decorated shed: a functional box with a sign that communicates meaning. The lesson argues we now do the same with our lives—our phones are plain boxes with fancy screens, and we create curated personas (decorated sheds of ourselves) where the image becomes more important than the actual life. This is Baudrillard's hyperreality."
     }
-  ]
+  ],
+  "id": "how-irony-killed-the-glass-box"
 }

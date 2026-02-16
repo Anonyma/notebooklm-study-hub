@@ -17,7 +17,10 @@
     "primary_era": "1919-1939",
     "timeline_start_year": 1919,
     "timeline_end_year": 1939,
-    "anchor_connections": [20, 21],
+    "anchor_connections": [
+      20,
+      21
+    ],
     "anchor_descriptions": {
       "20": "Telegraph and Electricity (Mid-19th century) - The technological acceleration that made radio, film, and mass communication possible—all essential to Art Deco's rapid global spread",
       "21": "World Wars (1914-1945) - WWI killed Art Nouveau and created the conditions for Deco's emergence; WWII killed Deco itself. The style exists entirely within this anchor's shadow"
@@ -256,5 +259,6 @@
       "correct_answer": 2,
       "explanation": "The 1929 crash necessitated the birth of Streamline Modern—sleeker, far less ornamental, embracing cheaper materials like chrome-plated steel and Bakelite. Furniture and architecture adopted rounded edges and horizontal lines suggesting motion. Art Deco adapted its geometric confidence to austerity rather than dying."
     }
-  ]
+  ],
+  "id": "the-glamour-and-geometry-of-art-deco"
 }
