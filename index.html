@@ -38,30 +38,6 @@
             --shadow-soft: 0 14px 32px rgba(31, 26, 20, 0.08);
         }
 
-        body.dark {
-            --bg: #0f1114;
-            --bg-elevated: #141824;
-            --card: #161b26;
-            --card-hover: #1d2433;
-            --border: #2a3244;
-            --border-subtle: #232b3c;
-            --text: #f3efe9;
-            --text-secondary: #c7bbac;
-            --text-dim: #a09384;
-            --accent: #ff9155;
-            --accent-dim: #e17038;
-            --accent-soft: rgba(255, 145, 85, 0.16);
-            --accent-glow: rgba(125, 211, 252, 0.08);
-            --accent-2: #7dd3fc;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --energy: #f59e0b;
-            --institutions: #34d399;
-            --information: #7dd3fc;
-            --shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
-            --shadow-soft: 0 18px 38px rgba(0, 0, 0, 0.28);
-        }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -94,20 +70,6 @@
             pointer-events: none;
         }
 
-        body.dark {
-            background: radial-gradient(circle at 10% 0%, rgba(255, 145, 85, 0.12), transparent 45%),
-                        radial-gradient(circle at 90% 10%, rgba(125, 211, 252, 0.12), transparent 50%),
-                        var(--bg);
-        }
-
-        body.dark::before {
-            background: linear-gradient(140deg, rgba(30, 36, 50, 0.92), rgba(15, 17, 20, 0.4));
-        }
-
-        body.dark::after {
-            background-image: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 18px);
-            opacity: 0.25;
-        }
 
         /* ===== LAYOUT ===== */
         .app-container {
@@ -128,9 +90,6 @@
             backdrop-filter: blur(10px);
         }
 
-        body.dark .sidebar {
-            background: rgba(20, 24, 36, 0.92);
-        }
 
         .main-content {
             flex: 1;
