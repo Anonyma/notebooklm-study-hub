@@ -7,8 +7,6 @@ html = html_path.read_text()
 required = [
     "quiz-group-controls",
     "quiz-toggle",
-    "theme-toggle",
-    "theme-label",
     "quizzes-grid",
 ]
 
@@ -19,4 +17,4 @@ if missing:
         print(f"- {item}")
     sys.exit(1)
 
-print("OK: Quiz controls and theme toggle markers present.")
+print("OK: Quiz controls markers present.")

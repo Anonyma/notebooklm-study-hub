@@ -160,30 +160,6 @@
             text-align: center;
         }
 
-        .theme-toggle {
-            width: 100%;
-            border: 1px solid var(--border);
-            background: var(--card);
-            color: var(--text-secondary);
-            border-radius: 999px;
-            padding: 10px 14px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-
-        .theme-toggle .theme-icon {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 1.8;
-        }
-
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -275,6 +251,12 @@
             font-family: var(--font-serif);
         }
 
+        .lesson-era {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin: -4px 0 6px;
+        }
+
         .lesson-card p {
             color: var(--text-secondary);
             font-size: 0.85rem;
@@ -309,7 +291,6 @@
 
         .badge.rich { background: rgba(15, 118, 110, 0.12); color: var(--accent-2); border-color: rgba(15, 118, 110, 0.2); }
         .badge.pending { background: rgba(31, 26, 20, 0.05); color: var(--text-dim); }
-        .badge.era { background: rgba(180, 83, 9, 0.12); color: var(--warning); border-color: rgba(180, 83, 9, 0.2); }
 
         .header-kicker {
             text-transform: uppercase;
@@ -734,10 +715,6 @@
             line-height: 1.55;
             position: relative;
             overflow: hidden;
-        }
-
-        body.dark .insight-card {
-            background: linear-gradient(135deg, rgba(22, 27, 38, 0.9), rgba(20, 24, 36, 0.7));
         }
 
         .insight-card::before {
@@ -2016,15 +1993,6 @@
                 </div>
             </div>
 
-            <nav class="nav-section">
-                <div class="nav-section-title">Theme</div>
-                <button class="theme-toggle" id="theme-toggle" type="button">
-                    <span id="theme-label">Dark Mode</span>
-                    <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 3a9 9 0 0 0 9 9 9 9 0 1 1-9-9z"></path>
-                    </svg>
-                </button>
-            </nav>
         </aside>
 
         <!-- Main Content -->
@@ -2229,32 +2197,6 @@
         // Load local generated content as fallback
         const LOCAL_CONTENT = {};
 
-        const THEME_KEY = 'study-hub-theme';
-
-        function applyTheme(theme) {
-            const isDark = theme === 'dark';
-            document.body.classList.toggle('dark', isDark);
-            const label = document.getElementById('theme-label');
-            if (label) label.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-        }
-
-        function initTheme() {
-            const stored = localStorage.getItem(THEME_KEY);
-            if (stored) {
-                applyTheme(stored);
-                return;
-            }
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(prefersDark ? 'dark' : 'light');
-        }
-
-        function toggleTheme() {
-            const isDark = document.body.classList.contains('dark');
-            const next = isDark ? 'light' : 'dark';
-            localStorage.setItem(THEME_KEY, next);
-            applyTheme(next);
-        }
-
         // ===== INITIALIZATION =====
         async function init() {
             if (typeof window.supabase === 'undefined') {
@@ -2263,7 +2205,6 @@
             }
 
             db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            initTheme();
             loadProgress();
             await loadAllData();
             setupEventListeners();
@@ -2707,12 +2648,6 @@
                     filterLessons(item.dataset.filter);
                 });
             });
-
-            // Theme toggle
-            const themeToggle = document.getElementById('theme-toggle');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', toggleTheme);
-            }
 
             // Quiz group controls
             document.querySelectorAll('.quiz-toggle').forEach(btn => {
@@ -3189,10 +3124,8 @@
                     <div class="lesson-card" style="--stagger:${index}" onclick="openLesson('${l.slug || l.id}')">
                         ${cardImage}
                         <h3>${l.title}</h3>
+                        ${eraBadge ? `<div class="lesson-era">${eraBadge}</div>` : ''}
                         <p>${buildLessonPreview(l)}</p>
-                        <div class="lesson-meta">
-                            ${eraBadge ? `<span class="badge era">${eraBadge}</span>` : ''}
-                        </div>
                     </div>
                 `;
             }).join('');
